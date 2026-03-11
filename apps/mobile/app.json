@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "OwnTown",
+    "slug": "owntown",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "owntown",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#7C3AED"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.owntown.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "OwnTown uses your location to find nearby stores and deliver to your address."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#7C3AED"
+      },
+      "package": "com.owntown.app",
+      "permissions": ["ACCESS_FINE_LOCATION", "RECEIVE_BOOT_COMPLETED", "VIBRATE"]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#7C3AED"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
