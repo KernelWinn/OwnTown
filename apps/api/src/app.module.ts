@@ -13,6 +13,9 @@ import { AdminModule } from './admin/admin.module'
 import { StorageModule } from './storage/storage.module'
 import { AddressesModule } from './addresses/addresses.module'
 import { CartModule } from './cart/cart.module'
+import { CouponsModule } from './coupons/coupons.module'
+import { BannersModule } from './banners/banners.module'
+import { ReviewsModule } from './reviews/reviews.module'
 
 @Module({
   imports: [
@@ -38,6 +41,9 @@ import { CartModule } from './cart/cart.module'
     ShippingModule,
     NotificationModule,
     AdminModule,
+    CouponsModule,
+    BannersModule,
+    ReviewsModule,
   ],
 })
 export class AppModule {}

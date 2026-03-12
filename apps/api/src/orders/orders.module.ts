@@ -4,9 +4,10 @@ import { OrdersService } from './orders.service'
 import { ProductsModule } from '../products/products.module'
 import { CartModule } from '../cart/cart.module'
 import { NotificationModule } from '../notification/notification.module'
+import { CouponsModule } from '../coupons/coupons.module'
 
 @Module({
-  imports: [ProductsModule, CartModule, NotificationModule],
+  imports: [ProductsModule, CartModule, NotificationModule, CouponsModule],
   controllers: [OrdersController],
   providers: [OrdersService],
   exports: [OrdersService],

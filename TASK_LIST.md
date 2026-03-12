@@ -154,16 +154,16 @@
 ## Next Priority (Phase 2)
 
 1. **Unit tests** — backend services (Auth, Product, Order, Payment)
-2. **Coupons and discount codes**
-3. **Offers and promotional banners**
+2. **RBAC for admin** — store manager vs. super admin
+3. **Admin analytics** — revenue charts, top products
 
 ---
 
 ## Phase 2 (Post-MVP)
-- [ ] Coupons and discount codes
-- [ ] Offers and promotional banners
+- [x] Coupons and discount codes
+- [x] Offers and promotional banners
 - [ ] Loyalty points system
-- [ ] Ratings & reviews (products and orders)
+- [x] Ratings & reviews (products and orders)
 - [ ] WhatsApp order notifications (WhatsApp Business API)
 - [ ] Returns & refunds workflow
 - [ ] Multi-city / multi-zone support

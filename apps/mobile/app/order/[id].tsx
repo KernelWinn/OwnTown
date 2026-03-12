@@ -1,8 +1,9 @@
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
-import { Text, Chip, Icon, Divider } from 'react-native-paper'
+import { useState } from 'react'
+import { View, ScrollView, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import { Text, Chip, Icon, Divider, Button, TextInput } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import * as WebBrowser from 'expo-web-browser'
 import { api } from '@/lib/api'
 import { formatPrice, formatDate } from '@owntown/utils'
@@ -15,11 +16,36 @@ const STATUS_STEPS = [
 
 export default function OrderDetailScreen() {
   const { id, new: isNew } = useLocalSearchParams<{ id: string; new?: string }>()
+  const qc = useQueryClient()
+  const [reviewOpen, setReviewOpen] = useState(false)
+  const [ratings, setRatings] = useState<Record<string, number>>({})
+  const [comments, setComments] = useState<Record<string, string>>({})
 
   const { data: order, isLoading } = useQuery<Order>({
     queryKey: ['order', id],
     queryFn: () => api.get(`/orders/${id}`).then(r => r.data),
     enabled: !!id,
+  })
+
+  const { data: hasReviewed } = useQuery<boolean>({
+    queryKey: ['has-reviewed', id],
+    queryFn: () => api.get(`/reviews/order/${id}/submitted`).then(r => r.data),
+    enabled: !!id && order?.status === 'delivered',
+  })
+
+  const reviewMutation = useMutation({
+    mutationFn: () =>
+      api.post(`/reviews/order/${id}`, {
+        items: (order?.items ?? []).map((item: OrderItem) => ({
+          productId: item.productId,
+          rating: ratings[item.productId] ?? 5,
+          comment: comments[item.productId] || undefined,
+        })),
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['has-reviewed', id] })
+      setReviewOpen(false)
+    },
   })
 
   if (isLoading || !order) {
@@ -154,6 +180,18 @@ export default function OrderDetailScreen() {
           <Text style={styles.addrPhone}>{order.address.phone}</Text>
         </View>
 
+        {/* Review prompt */}
+        {order.status === 'delivered' && !hasReviewed && (
+          <TouchableOpacity style={styles.reviewCard} onPress={() => setReviewOpen(true)}>
+            <Icon source="star-outline" size={22} color={colors.primary} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.reviewTitle}>Rate your order</Text>
+              <Text style={styles.reviewSub}>Share your experience with the products</Text>
+            </View>
+            <Icon source="chevron-right" size={18} color={colors.primary} />
+          </TouchableOpacity>
+        )}
+
         {/* Bill summary */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Bill Summary</Text>
@@ -177,6 +215,62 @@ export default function OrderDetailScreen() {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Review Modal */}
+      <Modal visible={reviewOpen} animationType="slide" presentationStyle="pageSheet">
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Rate Your Order</Text>
+            <TouchableOpacity onPress={() => setReviewOpen(false)}>
+              <Icon source="close" size={22} color={colors.text} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView contentContainerStyle={styles.modalScroll}>
+            {order.items.map((item: OrderItem) => (
+              <View key={item.productId} style={styles.reviewItemCard}>
+                <Text style={styles.reviewItemName}>{item.name}</Text>
+                <Text style={styles.reviewItemUnit}>{item.unit}</Text>
+                <View style={styles.starsRow}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <TouchableOpacity
+                      key={star}
+                      onPress={() => setRatings(r => ({ ...r, [item.productId]: star }))}
+                    >
+                      <Icon
+                        source={star <= (ratings[item.productId] ?? 0) ? 'star' : 'star-outline'}
+                        size={32}
+                        color={star <= (ratings[item.productId] ?? 0) ? '#F59E0B' : colors.border}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <TextInput
+                  mode="outlined"
+                  label="Add a comment (optional)"
+                  value={comments[item.productId] ?? ''}
+                  onChangeText={v => setComments(c => ({ ...c, [item.productId]: v }))}
+                  multiline
+                  numberOfLines={2}
+                  style={{ backgroundColor: '#fff', fontSize: 13 }}
+                  outlineStyle={{ borderRadius: 10 }}
+                />
+              </View>
+            ))}
+          </ScrollView>
+          <View style={styles.modalFooter}>
+            <Button
+              mode="contained"
+              onPress={() => reviewMutation.mutate()}
+              loading={reviewMutation.isPending}
+              disabled={reviewMutation.isPending}
+              style={{ borderRadius: 12 }}
+              contentStyle={{ paddingVertical: 6 }}
+            >
+              Submit Reviews
+            </Button>
+          </View>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -243,6 +337,28 @@ const styles = StyleSheet.create({
   addrName: { fontSize: 14, fontWeight: '700', color: colors.text },
   addrText: { fontSize: 13, color: colors.textSecondary, lineHeight: 20 },
   addrPhone: { fontSize: 13, color: colors.textSecondary },
+
+  // Review prompt
+  reviewCard: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    backgroundColor: colors.primaryLight, borderRadius: 14, padding: 16,
+    borderWidth: 1, borderColor: colors.primary + '30',
+  },
+  reviewTitle: { fontSize: 14, fontWeight: '700', color: colors.primary },
+  reviewSub: { fontSize: 12, color: colors.primary + 'CC', marginTop: 2 },
+
+  // Review modal
+  modalHeader: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: colors.border,
+  },
+  modalTitle: { fontSize: 17, fontWeight: '700', color: colors.text },
+  modalScroll: { padding: 16, gap: 12, paddingBottom: 8 },
+  modalFooter: { padding: 16, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: colors.border },
+  reviewItemCard: { backgroundColor: '#fff', borderRadius: 14, padding: 16, gap: 10 },
+  reviewItemName: { fontSize: 15, fontWeight: '700', color: colors.text },
+  reviewItemUnit: { fontSize: 12, color: colors.textSecondary, marginTop: -6 },
+  starsRow: { flexDirection: 'row', gap: 4 },
 
   // Bill
   billRow: { flexDirection: 'row', justifyContent: 'space-between' },

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, ScrollView, StyleSheet, TouchableOpacity, Alert, TextInput } from 'react-native'
 import { Text, Button, RadioButton, Icon, ActivityIndicator } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
@@ -25,6 +25,11 @@ export default function CheckoutScreen() {
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('cod')
   const [isPlacing, setIsPlacing] = useState(false)
   const [placeError, setPlaceError] = useState<string | null>(null)
+  const [couponCode, setCouponCode] = useState('')
+  const [couponDiscount, setCouponDiscount] = useState(0)
+  const [couponError, setCouponError] = useState<string | null>(null)
+  const [couponApplying, setCouponApplying] = useState(false)
+  const [appliedCode, setAppliedCode] = useState<string | null>(null)
   const { total, itemCount, clearCart } = useCartStore()
   const { user } = useAuthStore()
 
@@ -49,6 +54,31 @@ export default function CheckoutScreen() {
     queryFn: () => api.get('/orders/slots').then(r => r.data),
   })
 
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return
+    setCouponApplying(true)
+    setCouponError(null)
+    try {
+      const { data } = await api.post('/coupons/validate', { code: couponCode.trim(), orderAmount: total })
+      setCouponDiscount(data.discount)
+      setAppliedCode(data.code)
+      setCouponCode('')
+    } catch (err: any) {
+      setCouponError(err?.response?.data?.message ?? 'Invalid coupon')
+      setCouponDiscount(0)
+      setAppliedCode(null)
+    } finally {
+      setCouponApplying(false)
+    }
+  }
+
+  const removeCoupon = () => {
+    setAppliedCode(null)
+    setCouponDiscount(0)
+    setCouponError(null)
+    setCouponCode('')
+  }
+
   const handlePlaceOrder = async () => {
     setIsPlacing(true)
     setPlaceError(null)
@@ -58,6 +88,7 @@ export default function CheckoutScreen() {
         addressId: selectedAddress,
         deliverySlotId: selectedSlot,
         paymentMethod,
+        couponCode: appliedCode ?? undefined,
       })
 
       if (paymentMethod === 'cod') {
@@ -290,6 +321,44 @@ export default function CheckoutScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Coupon */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Coupon Code</Text>
+          {appliedCode ? (
+            <View style={styles.appliedCoupon}>
+              <Icon source="ticket-percent" size={18} color={colors.success} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.appliedCode}>{appliedCode}</Text>
+                <Text style={styles.appliedSaving}>Saving {formatPrice(couponDiscount)}</Text>
+              </View>
+              <TouchableOpacity onPress={removeCoupon}>
+                <Icon source="close-circle" size={18} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.couponRow}>
+              <TextInput
+                style={styles.couponInput}
+                placeholder="Enter coupon code"
+                value={couponCode}
+                onChangeText={v => { setCouponCode(v.toUpperCase()); setCouponError(null) }}
+                autoCapitalize="characters"
+                placeholderTextColor={colors.textSecondary}
+              />
+              <TouchableOpacity
+                style={[styles.applyBtn, (!couponCode.trim() || couponApplying) && { opacity: 0.5 }]}
+                onPress={applyCoupon}
+                disabled={!couponCode.trim() || couponApplying}
+              >
+                {couponApplying
+                  ? <ActivityIndicator size={14} color="#fff" />
+                  : <Text style={styles.applyBtnText}>Apply</Text>}
+              </TouchableOpacity>
+            </View>
+          )}
+          {couponError && <Text style={styles.couponError}>{couponError}</Text>}
+        </View>
+
         {/* Summary */}
         <View style={styles.summaryCard}>
           <View style={styles.summaryRow}>
@@ -300,9 +369,15 @@ export default function CheckoutScreen() {
             <Text style={styles.summaryLabel}>Delivery Fee</Text>
             <Text style={[styles.summaryValue, { color: colors.success }]}>FREE</Text>
           </View>
+          {couponDiscount > 0 && (
+            <View style={styles.summaryRow}>
+              <Text style={[styles.summaryLabel, { color: colors.success }]}>Coupon ({appliedCode})</Text>
+              <Text style={[styles.summaryValue, { color: colors.success }]}>−{formatPrice(couponDiscount)}</Text>
+            </View>
+          )}
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>{formatPrice(total)}</Text>
+            <Text style={styles.totalValue}>{formatPrice(Math.max(0, total - couponDiscount))}</Text>
           </View>
         </View>
       </ScrollView>
@@ -406,6 +481,27 @@ const styles = StyleSheet.create({
   totalRow: { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 10, marginTop: 2 },
   totalLabel: { fontSize: 16, fontWeight: '700', color: colors.text },
   totalValue: { fontSize: 16, fontWeight: '800', color: colors.primary },
+
+  // Coupon
+  couponRow: { flexDirection: 'row', gap: 8 },
+  couponInput: {
+    flex: 1, height: 44, borderWidth: 1.5, borderColor: colors.border,
+    borderRadius: 10, paddingHorizontal: 12, fontSize: 14,
+    fontFamily: 'monospace', color: colors.text, backgroundColor: '#fff',
+  },
+  applyBtn: {
+    backgroundColor: colors.primary, borderRadius: 10,
+    paddingHorizontal: 16, height: 44, justifyContent: 'center', alignItems: 'center',
+  },
+  applyBtnText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+  appliedCoupon: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    backgroundColor: colors.success + '15', borderRadius: 10, padding: 12,
+    borderWidth: 1, borderColor: colors.success + '40',
+  },
+  appliedCode: { fontSize: 13, fontWeight: '700', color: colors.success, fontFamily: 'monospace' },
+  appliedSaving: { fontSize: 12, color: colors.success, marginTop: 1 },
+  couponError: { fontSize: 12, color: colors.error },
 
   // Footer
   footer: { padding: 16, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: colors.border },

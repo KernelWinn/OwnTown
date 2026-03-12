@@ -9,6 +9,9 @@ import { ConfigService } from '@nestjs/config'
 import { ProductsModule } from '../products/products.module'
 import { OrdersModule } from '../orders/orders.module'
 import { ShippingModule } from '../shipping/shipping.module'
+import { CouponsModule } from '../coupons/coupons.module'
+import { BannersModule } from '../banners/banners.module'
+import { ReviewsModule } from '../reviews/reviews.module'
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { ShippingModule } from '../shipping/shipping.module'
     ProductsModule,
     OrdersModule,
     ShippingModule,
+    CouponsModule,
+    BannersModule,
+    ReviewsModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({

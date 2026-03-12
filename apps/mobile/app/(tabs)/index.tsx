@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
   ScrollView, View, StyleSheet,
-  TouchableOpacity, Dimensions,
+  TouchableOpacity, Dimensions, Image, FlatList,
 } from 'react-native'
 import { Text, Icon } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -16,10 +16,87 @@ import type { Product, Category } from '@owntown/types'
 
 const { width } = Dimensions.get('window')
 const CARD_WIDTH = (width - 48) / 2   // 2-col grid with padding
+const BANNER_WIDTH = width - 32
+
+interface Banner {
+  id: string
+  title: string
+  subtitle: string | null
+  imageUrl: string
+  deepLink: string | null
+}
+
+function BannerCarousel({ banners }: { banners: Banner[] }) {
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  if (!banners.length) return null
+
+  return (
+    <View style={bannerStyles.container}>
+      <FlatList
+        data={banners}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={b => b.id}
+        onMomentumScrollEnd={e => {
+          setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / BANNER_WIDTH))
+        }}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            activeOpacity={0.95}
+            style={bannerStyles.slide}
+            onPress={() => {
+              if (!item.deepLink) return
+              if (item.deepLink.startsWith('product/')) router.push(`/${item.deepLink}` as any)
+              else if (item.deepLink.startsWith('categories')) router.push('/(tabs)/search' as any)
+            }}
+          >
+            <Image source={{ uri: item.imageUrl }} style={bannerStyles.image} resizeMode="cover" />
+            <View style={bannerStyles.overlay}>
+              <Text style={bannerStyles.title}>{item.title}</Text>
+              {item.subtitle && <Text style={bannerStyles.subtitle}>{item.subtitle}</Text>}
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+      {banners.length > 1 && (
+        <View style={bannerStyles.dots}>
+          {banners.map((_, i) => (
+            <View key={i} style={[bannerStyles.dot, i === activeIndex && bannerStyles.dotActive]} />
+          ))}
+        </View>
+      )}
+    </View>
+  )
+}
+
+const bannerStyles = StyleSheet.create({
+  container: { marginHorizontal: 16, marginTop: 12 },
+  slide: {
+    width: BANNER_WIDTH, height: 140, borderRadius: 14, overflow: 'hidden',
+    backgroundColor: colors.border,
+  },
+  image: { width: '100%', height: '100%' },
+  overlay: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    backgroundColor: 'rgba(0,0,0,0.35)', padding: 12,
+  },
+  title: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  subtitle: { color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 2 },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: 4, marginTop: 8 },
+  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.border },
+  dotActive: { backgroundColor: colors.primary, width: 16 },
+})
 
 export default function HomeScreen() {
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
   const { itemCount } = useCartStore()
+
+  const { data: banners = [] } = useQuery<Banner[]>({
+    queryKey: ['banners'],
+    queryFn: () => api.get('/banners').then(r => r.data),
+  })
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ['categories'],
@@ -42,7 +119,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[1]}>
+      <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
@@ -72,6 +149,9 @@ export default function HomeScreen() {
             <Text style={styles.searchPlaceholder}>Search for groceries...</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Banner carousel */}
+        <BannerCarousel banners={banners} />
 
         {/* Categories row — sticky */}
         <View style={styles.categoriesWrap}>

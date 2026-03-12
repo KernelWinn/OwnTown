@@ -7,6 +7,7 @@ import { orders, orderItems, addresses, deliverySlots } from '../database/schema
 import { generateOrderNumber } from '@owntown/utils'
 import { CartService } from '../cart/cart.service'
 import { ProductsService } from '../products/products.service'
+import { CouponsService } from '../coupons/coupons.service'
 import { NOTIFICATION_QUEUE } from '../notification/notification.module'
 import type { CreateOrderDto } from './dto/create-order.dto'
 
@@ -19,6 +20,7 @@ export class OrdersService {
     @Inject(DB) private readonly db: any,
     private readonly cartService: CartService,
     private readonly productsService: ProductsService,
+    private readonly couponsService: CouponsService,
     @InjectQueue(NOTIFICATION_QUEUE) private readonly notificationQueue: Queue,
   ) {}
 
@@ -91,7 +93,17 @@ export class OrdersService {
     }, 0)
 
     const deliveryFee = subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE
-    const total = subtotal + deliveryFee
+
+    // 4b. Validate and apply coupon
+    let discount = 0
+    let appliedCouponId: string | undefined
+    if (dto.couponCode) {
+      const coupon = await this.couponsService.validate(dto.couponCode, subtotal)
+      discount = coupon.discount
+      appliedCouponId = coupon.couponId
+    }
+
+    const total = subtotal + deliveryFee - discount
 
     // 5. Insert order
     const orderNumber = generateOrderNumber(new Date(), await this.getNextSequence())
@@ -119,6 +131,7 @@ export class OrdersService {
         subtotal,
         deliveryFee,
         totalGst,
+        discount,
         total,
         notes: dto.notes,
       })
@@ -154,7 +167,12 @@ export class OrdersService {
       .set({ currentOrders: slot.currentOrders + 1 })
       .where(eq(deliverySlots.id, dto.deliverySlotId))
 
-    // 9. Clear cart
+    // 9. Increment coupon usage
+    if (appliedCouponId) {
+      await this.couponsService.incrementUsage(appliedCouponId)
+    }
+
+    // 10. Clear cart
     await this.cartService.clear(userId)
 
     const orderWithItems = await this.findOne(order.id, userId)
