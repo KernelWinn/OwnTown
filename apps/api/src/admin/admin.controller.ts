@@ -44,6 +44,11 @@ export class AdminController {
     return this.shippingService.createShipment(id)
   }
 
+  @Get('orders/:id/label')
+  getShippingLabel(@Param('id') id: string) {
+    return this.shippingService.generateLabel(id)
+  }
+
   @Get('products/low-stock')
   getLowStock() {
     return this.productsService.findLowStock()

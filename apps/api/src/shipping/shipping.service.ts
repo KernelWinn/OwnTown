@@ -70,6 +70,34 @@ export class ShippingService {
     return data
   }
 
+  async generateLabel(orderId: string): Promise<{ labelUrl: string }> {
+    const [shipment] = await this.db
+      .select()
+      .from(shipments)
+      .where(eq(shipments.orderId, orderId))
+
+    if (!shipment) throw new Error('Shipment not found for this order')
+
+    // Return cached label if already generated
+    if (shipment.labelUrl) return { labelUrl: shipment.labelUrl }
+
+    const token = await this.getToken()
+    const { data } = await axios.post(
+      `${SHIPROCKET_API}/courier/generate/label`,
+      { shipment_id: [shipment.shiprocketShipmentId] },
+      { headers: { Authorization: `Bearer ${token}` } },
+    )
+
+    const labelUrl: string = data.label_url
+    await this.db
+      .update(shipments)
+      .set({ labelUrl, updatedAt: new Date() })
+      .where(eq(shipments.orderId, orderId))
+
+    this.logger.log(`Label generated for order ${orderId}: ${labelUrl}`)
+    return { labelUrl }
+  }
+
   async handleWebhook(payload: any) {
     const awb = payload.awb
     const newStatus = mapShiprocketStatus(payload.current_status)

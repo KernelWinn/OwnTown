@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Eye, Truck } from 'lucide-react'
+import { Eye, Truck, Printer } from 'lucide-react'
 import { toast } from 'sonner'
 import { api } from '@/lib/api'
 import { formatPrice, formatDate } from '@owntown/utils'
@@ -53,6 +53,19 @@ export default function OrdersPage() {
     },
     onError: () => toast.error('Shipment creation failed'),
   })
+
+  const [labelLoading, setLabelLoading] = useState<string | null>(null)
+  const printLabel = async (orderId: string) => {
+    setLabelLoading(orderId)
+    try {
+      const { data } = await api.get(`/admin/orders/${orderId}/label`)
+      window.open(data.labelUrl, '_blank', 'noopener')
+    } catch {
+      toast.error('Failed to generate label')
+    } finally {
+      setLabelLoading(null)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -119,9 +132,20 @@ export default function OrdersPage() {
                           Ship
                         </button>
                       )}
-                      {/* AWB badge */}
+                      {/* AWB + Print Label */}
                       {order.awbNumber && (
-                        <span className="text-xs text-gray-400 font-mono">{order.awbNumber}</span>
+                        <>
+                          <span className="text-xs text-gray-400 font-mono">{order.awbNumber}</span>
+                          <button
+                            onClick={() => printLabel(order.id)}
+                            disabled={labelLoading === order.id}
+                            className="flex items-center gap-1 text-xs px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 font-medium transition disabled:opacity-50"
+                            title="Print shipping label"
+                          >
+                            <Printer size={12} />
+                            {labelLoading === order.id ? 'Generating…' : 'Label'}
+                          </button>
+                        </>
                       )}
                       <button
                         onClick={() => setSelectedOrder(order)}
