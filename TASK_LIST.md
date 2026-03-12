@@ -1,6 +1,7 @@
 # Project Task List – Grocery Delivery App (Getir-Inspired)
 
 > **Logistics Model:** Courier/shipping partners via Shiprocket (no in-house delivery partner app in MVP)
+> **Tags:** `[MANUAL]` = requires external account/dashboard setup, no code needed
 
 ---
 
@@ -11,16 +12,16 @@
 - [x] Define delivery slot configuration and order flow
 - [x] Design database schema (users, products, orders, shipments, slots)
 - [x] Set up monorepo structure (Turborepo + Expo + NestJS + Next.js)
-- [ ] Create wireframes and UI/UX design (Getir-inspired, mobile-first)
+- [ ] Create wireframes and UI/UX design (Getir-inspired, mobile-first) `[MANUAL]`
 
 ### 2. Infrastructure & DevOps
 - [x] Configure Docker + Docker Compose for local development (PostgreSQL 16 + Redis 7)
 - [x] Set up GitHub repository and branch strategy
-- [ ] Set up AWS account (Mumbai region — ap-south-1)
-- [ ] Configure AWS S3 bucket + CloudFront CDN for image storage
-- [ ] Configure GitHub Actions CI/CD pipeline
-- [ ] Set up Sentry for error monitoring (frontend + backend)
-- [ ] Configure environment variables and secrets management
+- [ ] Set up AWS account (Mumbai region — ap-south-1) `[MANUAL]`
+- [ ] Configure AWS S3 bucket + CloudFront CDN for image storage `[MANUAL]`
+- [x] Configure GitHub Actions CI/CD pipeline
+- [ ] Set up Sentry for error monitoring (frontend + backend) `[MANUAL]`
+- [ ] Configure environment variables and secrets management `[MANUAL]`
 
 ### 3. Backend — Auth Service
 - [x] Set up NestJS monorepo (all services)
@@ -35,7 +36,7 @@
 - [x] Inventory management APIs (stock levels, low-stock threshold)
 - [x] Product image upload to S3 (presigned URL flow)
 - [x] Basic product search API (PostgreSQL full-text search)
-- [ ] Pincode serviceability check API (via Shiprocket)
+- [x] Pincode serviceability check API (via Shiprocket)
 
 ### 5. Backend — Order Management Service
 - [x] Cart management APIs (add, update, remove items) — Redis-backed
@@ -57,30 +58,30 @@
 - [x] Shipment creation API (generate AWB, assign courier)
 - [x] Shiprocket webhook handler (track status updates: shipped, out for delivery, delivered, failed)
 - [x] Sync shipment status back to Order Management Service
-- [ ] Shipping label generation
+- [x] Shipping label generation
 
 ### 8. Backend — Notification Service
 - [x] Firebase Cloud Messaging (FCM) setup
 - [x] FCM push + MSG91 SMS service methods
 - [x] FCM token storage per device/platform
-- [ ] **BullMQ job queue for async notification dispatch**
-- [ ] **Wire triggers: order confirmed, packed, shipped, delivered**
-- [ ] Push notification deep link handling
+- [x] **BullMQ job queue for async notification dispatch**
+- [x] **Wire triggers: order confirmed, packed, shipped, delivered**
+- [x] Push notification deep link handling
 
 ### 9. Frontend — Customer App (React Native + Expo)
 #### Setup
 - [x] Expo project setup with Expo Router (file-based routing)
 - [x] Configure React Native Paper (UI component library)
 - [x] Set up Zustand (state management) + React Query (API calls)
-- [ ] Configure Expo Notifications (FCM push)
-- [ ] Configure EAS Build for iOS and Android
+- [x] Configure Expo Notifications (FCM push)
+- [x] Configure EAS Build for iOS and Android
 
 #### Onboarding & Auth
 - [x] Splash/welcome screen and onboarding flow
 - [x] Phone number entry screen
 - [x] OTP verification screen
 - [x] Profile setup (name stored in auth store)
-- [ ] Splash screen asset + app icon
+- [x] Splash screen asset + app icon (placeholder — replace before App Store submission) `[MANUAL]` for final branded assets
 
 #### Home & Catalog
 - [x] Home screen (sticky category pills, 2-col product grid, cart badge)
@@ -96,21 +97,21 @@
 - [x] Delivery slot selection (grouped by date, full slots disabled)
 - [x] Payment method selection (COD / Razorpay)
 - [x] Order placement + confirmation navigation
-- [ ] **Razorpay mobile SDK integration (launch checkout sheet for online payments)**
-- [ ] Google Places Autocomplete for address input
-- [ ] Pincode serviceability check on address selection
+- [x] **Razorpay mobile SDK integration (launch checkout sheet for online payments)**
+- [x] Google Places Autocomplete for address input
+- [x] Pincode serviceability check on address selection
 
 #### Orders & Tracking
 - [x] Orders list screen (status chip, date, total)
 - [x] Order detail screen (status timeline, AWB tracking, items, address, bill)
-- [ ] Push notification deep link to order detail
-- [ ] Shipment tracking URL display / in-app browser
+- [x] Push notification deep link to order detail
+- [x] Shipment tracking URL display / in-app browser
 
 #### Profile & Addresses
 - [x] Profile screen (name, phone, avatar initials, logout)
 - [x] Address book list (set default, edit link, delete)
 - [x] New address form
-- [ ] **Address edit screen** (`/addresses/edit/[id]`) — linked but not built
+- [x] **Address edit screen** (`/addresses/edit/[id]`)
 
 ### 10. Frontend — Admin Dashboard (Next.js)
 - [x] Next.js project setup with Tailwind CSS
@@ -121,42 +122,40 @@
 - [x] Inventory management (stock update modal with low-stock warning)
 - [x] Order management (list, status advancement, Ship button)
 - [x] Order detail modal (items, address, totals, AWB/tracking)
-- [ ] **Admin JWT guard** — `TODO: Add AdminJwtGuard` in controller
-- [ ] Delivery slot configuration UI
-- [ ] Shipping label print view
-- [ ] User list (read-only)
+- [x] **Admin JWT guard** — `AdminJwtGuard` protects all `/admin` routes
+- [x] Delivery slot configuration UI
+- [x] Shipping label print view
+- [x] User list (read-only)
 
 ### 11. Testing & QA
 - [ ] Unit tests — backend services (Auth, Product, Order, Payment, Shipping)
 - [ ] Integration tests — API endpoints
 - [ ] End-to-end tests — customer order flow (place → pay → track)
-- [ ] Razorpay payment flow testing (sandbox)
-- [ ] Shiprocket API testing (sandbox/staging)
+- [ ] Razorpay payment flow testing (sandbox) `[MANUAL]`
+- [ ] Shiprocket API testing (sandbox/staging) `[MANUAL]`
 - [ ] Performance testing — catalog and checkout endpoints
-- [ ] Cross-platform testing — iOS, Android, Web
+- [ ] Cross-platform testing — iOS, Android, Web `[MANUAL]`
 - [ ] Security checks — auth, payment, input validation
 
 ### 12. Launch Prep
-- [ ] Apple Developer account setup
-- [ ] Google Play Console account setup
-- [ ] App Store listing (screenshots, description, keywords)
-- [ ] Play Store listing
-- [ ] App Store Review compliance check
-- [ ] Web deployment (Vercel or Netlify)
-- [ ] Production environment setup and smoke testing
-- [ ] Beta launch (TestFlight + Play internal testing)
-- [ ] Bug fixes from beta feedback
-- [ ] Public launch
+- [ ] Apple Developer account setup `[MANUAL]`
+- [ ] Google Play Console account setup `[MANUAL]`
+- [ ] App Store listing (screenshots, description, keywords) `[MANUAL]`
+- [ ] Play Store listing `[MANUAL]`
+- [ ] App Store Review compliance check `[MANUAL]`
+- [ ] Web deployment (Vercel or Netlify) `[MANUAL]`
+- [ ] Production environment setup and smoke testing `[MANUAL]`
+- [ ] Beta launch (TestFlight + Play internal testing) `[MANUAL]`
+- [ ] Bug fixes from beta feedback `[MANUAL]`
+- [ ] Public launch `[MANUAL]`
 
 ---
 
-## Next Priority (immediate)
+## Next Priority (Phase 2)
 
-1. **Razorpay mobile SDK** — wire up online payment checkout sheet in `/checkout`
-2. **AdminJwtGuard** — protect all `/admin` routes
-3. **Notification triggers** — BullMQ + FCM/SMS on order lifecycle events
-4. **Address edit screen** — `/addresses/edit/[id]`
-5. **Delivery slot config UI** in admin
+1. **Unit tests** — backend services (Auth, Product, Order, Payment)
+2. **Coupons and discount codes**
+3. **Offers and promotional banners**
 
 ---
 

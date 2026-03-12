@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common'
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
+import { AdminJwtStrategy } from './admin-jwt.strategy'
+import { AdminJwtGuard } from './admin-jwt.guard'
 import { JwtModule } from '@nestjs/jwt'
+import { PassportModule } from '@nestjs/passport'
 import { ConfigService } from '@nestjs/config'
 import { ProductsModule } from '../products/products.module'
 import { OrdersModule } from '../orders/orders.module'
@@ -9,6 +12,7 @@ import { ShippingModule } from '../shipping/shipping.module'
 
 @Module({
   imports: [
+    PassportModule,
     ProductsModule,
     OrdersModule,
     ShippingModule,
@@ -21,6 +25,6 @@ import { ShippingModule } from '../shipping/shipping.module'
     }),
   ],
   controllers: [AdminController],
-  providers: [AdminService],
+  providers: [AdminService, AdminJwtStrategy, AdminJwtGuard],
 })
 export class AdminModule {}

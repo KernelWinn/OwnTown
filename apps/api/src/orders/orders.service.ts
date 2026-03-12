@@ -1,10 +1,13 @@
 import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import { InjectQueue } from '@nestjs/bullmq'
+import { Queue } from 'bullmq'
 import { eq, and, gte, desc } from 'drizzle-orm'
 import { DB } from '../database/database.module'
 import { orders, orderItems, addresses, deliverySlots } from '../database/schema'
 import { generateOrderNumber } from '@owntown/utils'
 import { CartService } from '../cart/cart.service'
 import { ProductsService } from '../products/products.service'
+import { NOTIFICATION_QUEUE } from '../notification/notification.module'
 import type { CreateOrderDto } from './dto/create-order.dto'
 
 const DELIVERY_FEE = 0        // free delivery for MVP
@@ -16,6 +19,7 @@ export class OrdersService {
     @Inject(DB) private readonly db: any,
     private readonly cartService: CartService,
     private readonly productsService: ProductsService,
+    @InjectQueue(NOTIFICATION_QUEUE) private readonly notificationQueue: Queue,
   ) {}
 
   // ─── Customer ─────────────────────────────────────────────────────────
@@ -199,6 +203,7 @@ export class OrdersService {
       .update(orders)
       .set({ status: status as any, updatedAt: new Date() })
       .where(eq(orders.id, orderId))
+    await this.notificationQueue.add('order-status-changed', { orderId, status })
   }
 
   async findAll(limit = 50) {

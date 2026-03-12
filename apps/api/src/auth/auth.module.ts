@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { JwtStrategy } from './jwt.strategy'
 import { OtpService } from './otp.service'
+import { NotificationModule } from '../notification/notification.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { OtpService } from './otp.service'
         signOptions: { expiresIn: '15m' },
       }),
     }),
+    NotificationModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, OtpService],

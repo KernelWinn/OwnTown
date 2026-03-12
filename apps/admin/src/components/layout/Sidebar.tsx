@@ -9,6 +9,7 @@ import {
   Users,
   Tag,
   Truck,
+  Clock,
   LogOut,
 } from 'lucide-react'
 import { useAdminStore } from '@/store/admin'
@@ -20,6 +21,7 @@ const navItems = [
   { label: 'Products', href: '/products', icon: Package },
   { label: 'Categories', href: '/categories', icon: Tag },
   { label: 'Shipments', href: '/shipments', icon: Truck },
+  { label: 'Delivery Slots', href: '/slots', icon: Clock },
   { label: 'Users', href: '/users', icon: Users },
 ]
 

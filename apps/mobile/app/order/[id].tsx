@@ -1,9 +1,9 @@
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Chip, Icon, Divider } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
-import { TouchableOpacity } from 'react-native'
+import * as WebBrowser from 'expo-web-browser'
 import { api } from '@/lib/api'
 import { formatPrice, formatDate } from '@owntown/utils'
 import { colors, statusColors } from '@/constants/theme'
@@ -110,7 +110,14 @@ export default function OrderDetailScreen() {
               <Text style={styles.trackLabel}>AWB: {order.awbNumber}</Text>
             </View>
             {order.trackingUrl && (
-              <Text style={styles.trackSub}>{order.trackingUrl}</Text>
+              <TouchableOpacity
+                style={styles.trackBtn}
+                onPress={() => WebBrowser.openBrowserAsync(order.trackingUrl!)}
+              >
+                <Icon source="map-marker-path" size={16} color={colors.primary} />
+                <Text style={styles.trackBtnText}>Track Shipment</Text>
+                <Icon source="chevron-right" size={16} color={colors.primary} />
+              </TouchableOpacity>
             )}
           </View>
         )}
@@ -218,7 +225,12 @@ const styles = StyleSheet.create({
   // Tracking
   trackRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   trackLabel: { fontSize: 14, fontWeight: '600', color: colors.text },
-  trackSub: { fontSize: 12, color: colors.textSecondary },
+  trackBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    backgroundColor: colors.primaryLight, borderRadius: 10,
+    paddingHorizontal: 14, paddingVertical: 10, alignSelf: 'flex-start',
+  },
+  trackBtnText: { fontSize: 14, fontWeight: '600', color: colors.primary, flex: 1 },
 
   // Items
   itemRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

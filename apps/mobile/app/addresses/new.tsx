@@ -6,6 +6,7 @@ import { router } from 'expo-router'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { colors } from '@/constants/theme'
+import { PlacesAutocomplete } from '@/components/PlacesAutocomplete'
 
 interface FormState {
   label: string
@@ -73,6 +74,9 @@ export default function NewAddressScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <PlacesAutocomplete
+          onSelect={fields => setForm(f => ({ ...f, ...fields }))}
+        />
         <Field
           label="Label (optional)"
           placeholder="Home, Office…"

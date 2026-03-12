@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { Text, Button, RadioButton, Icon, ActivityIndicator } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
+import RazorpayCheckout from 'react-native-razorpay'
 import { api } from '@/lib/api'
 import { formatPrice } from '@owntown/utils'
 import { useCartStore } from '@/store/cart'
+import { useAuthStore } from '@/store/auth'
 import { colors } from '@/constants/theme'
 import type { Address, DeliverySlot } from '@owntown/types'
 
@@ -21,7 +23,10 @@ export default function CheckoutScreen() {
   const [selectedAddress, setSelectedAddress] = useState<string>('')
   const [selectedSlot, setSelectedSlot] = useState<string>('')
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('cod')
+  const [isPlacing, setIsPlacing] = useState(false)
+  const [placeError, setPlaceError] = useState<string | null>(null)
   const { total, itemCount, clearCart } = useCartStore()
+  const { user } = useAuthStore()
 
   const { data: addresses = [], isLoading: addrLoading } = useQuery<Address[]>({
     queryKey: ['addresses'],
@@ -44,18 +49,66 @@ export default function CheckoutScreen() {
     queryFn: () => api.get('/orders/slots').then(r => r.data),
   })
 
-  const placeMutation = useMutation({
-    mutationFn: () =>
-      api.post('/orders', {
+  const handlePlaceOrder = async () => {
+    setIsPlacing(true)
+    setPlaceError(null)
+    try {
+      // Step 1: Create the order
+      const { data: { order } } = await api.post('/orders', {
         addressId: selectedAddress,
         deliverySlotId: selectedSlot,
         paymentMethod,
-      }).then(r => r.data),
-    onSuccess: ({ order }) => {
+      })
+
+      if (paymentMethod === 'cod') {
+        clearCart()
+        router.replace(`/order/${order.id}?new=true`)
+        return
+      }
+
+      // Step 2: Create Razorpay order on backend
+      const { data: rzp } = await api.post('/payment/create-order', {
+        orderId: order.id,
+        amount: order.total,
+      })
+
+      // Step 3: Open Razorpay checkout sheet
+      const paymentData = await RazorpayCheckout.open({
+        key: rzp.keyId,
+        amount: String(rzp.amount),
+        currency: rzp.currency,
+        order_id: rzp.razorpayOrderId,
+        name: 'OwnTown',
+        description: `Order ${order.orderNumber}`,
+        prefill: {
+          contact: user?.phone ?? '',
+          name: user?.name ?? '',
+          email: '',
+        },
+        theme: { color: colors.primary },
+      })
+
+      // Step 4: Verify payment on backend
+      await api.post('/payment/verify', {
+        orderId: order.id,
+        razorpayOrderId: paymentData.razorpay_order_id,
+        razorpayPaymentId: paymentData.razorpay_payment_id,
+        razorpaySignature: paymentData.razorpay_signature,
+      })
+
       clearCart()
       router.replace(`/order/${order.id}?new=true`)
-    },
-  })
+    } catch (err: any) {
+      // Razorpay cancellation has error.code === 'PAYMENT_CANCELLED'
+      if (err?.code === 'PAYMENT_CANCELLED') {
+        Alert.alert('Payment Cancelled', 'Your order has not been placed.')
+      } else {
+        setPlaceError('Something went wrong. Please try again.')
+      }
+    } finally {
+      setIsPlacing(false)
+    }
+  }
 
   const canPlace =
     !!selectedAddress &&
@@ -256,18 +309,20 @@ export default function CheckoutScreen() {
 
       {/* Place order button */}
       <View style={styles.footer}>
-        {placeMutation.isError && (
-          <Text style={styles.errorText}>Something went wrong. Please try again.</Text>
+        {placeError && (
+          <Text style={styles.errorText}>{placeError}</Text>
         )}
         <Button
           mode="contained"
-          disabled={!canPlace || placeMutation.isPending}
-          loading={placeMutation.isPending}
-          onPress={() => placeMutation.mutate()}
+          disabled={!canPlace || isPlacing}
+          loading={isPlacing}
+          onPress={handlePlaceOrder}
           style={styles.placeBtn}
           contentStyle={styles.placeBtnContent}
         >
-          {placeMutation.isPending ? 'Placing Order...' : `Place Order · ${formatPrice(total)}`}
+          {isPlacing
+            ? (paymentMethod === 'razorpay' ? 'Processing...' : 'Placing Order...')
+            : `Place Order · ${formatPrice(total)}`}
         </Button>
       </View>
     </SafeAreaView>

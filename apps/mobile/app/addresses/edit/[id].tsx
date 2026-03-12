@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { colors } from '@/constants/theme'
 import type { Address } from '@owntown/types'
+import { PlacesAutocomplete } from '@/components/PlacesAutocomplete'
 
 interface ServiceabilityResult {
   pincode: string
@@ -125,6 +126,9 @@ export default function EditAddressScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <PlacesAutocomplete
+          onSelect={fields => setForm(f => ({ ...f, ...fields }))}
+        />
         <Field
           label="Label (optional)"
           placeholder="Home, Office…"

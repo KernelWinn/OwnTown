@@ -22,7 +22,7 @@ export class PaymentService {
       { amount: amountPaise, currency: 'INR', receipt: orderId },
       { auth: { username: keyId, password: keySecret } },
     )
-    return { razorpayOrderId: data.id, amount: data.amount, currency: data.currency }
+    return { razorpayOrderId: data.id, amount: data.amount, currency: data.currency, keyId }
   }
 
   verifyPayment(body: {
