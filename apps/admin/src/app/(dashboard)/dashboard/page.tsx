@@ -1,4 +1,3 @@
-import { Suspense } from 'next/dist/server/app-render/entry-base'
 import { DashboardStats } from '@/components/dashboard/DashboardStats'
 import { RecentOrders } from '@/components/dashboard/RecentOrders'
 import { LowStockAlert } from '@/components/dashboard/LowStockAlert'

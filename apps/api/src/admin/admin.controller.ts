@@ -29,6 +29,11 @@ export class AdminController {
     return this.adminService.getOrders(Number(limit) || 20)
   }
 
+  @Get('orders/:id')
+  getOrder(@Param('id') id: string) {
+    return this.adminService.getOrderWithItems(id)
+  }
+
   @Put('orders/:id/status')
   updateOrderStatus(@Param('id') id: string, @Body('status') status: string) {
     return this.ordersService.updateStatus(id, status)

@@ -1,9 +1,9 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { compare } from 'bcrypt'
-import { eq, desc, gte, count, sum } from 'drizzle-orm'
+import { eq, desc, gte, count } from 'drizzle-orm'
 import { DB } from '../database/database.module'
-import { adminUsers, orders, users } from '../database/schema'
+import { adminUsers, orders, orderItems, users } from '../database/schema'
 
 @Injectable()
 export class AdminService {
@@ -49,5 +49,12 @@ export class AdminService {
 
   async getOrders(limit: number) {
     return this.db.select().from(orders).orderBy(desc(orders.createdAt)).limit(limit)
+  }
+
+  async getOrderWithItems(id: string) {
+    const [order] = await this.db.select().from(orders).where(eq(orders.id, id))
+    if (!order) throw new NotFoundException('Order not found')
+    const items = await this.db.select().from(orderItems).where(eq(orderItems.orderId, id))
+    return { ...order, items }
   }
 }

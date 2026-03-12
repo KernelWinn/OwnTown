@@ -11,6 +11,7 @@ import { NotificationModule } from './notification/notification.module'
 import { AdminModule } from './admin/admin.module'
 import { StorageModule } from './storage/storage.module'
 import { AddressesModule } from './addresses/addresses.module'
+import { CartModule } from './cart/cart.module'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AddressesModule } from './addresses/addresses.module'
     StorageModule,
     AuthModule,
     AddressesModule,
+    CartModule,
     ProductsModule,
     OrdersModule,
     PaymentModule,

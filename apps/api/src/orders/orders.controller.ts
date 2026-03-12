@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common'
 import { OrdersService } from './orders.service'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CurrentUser } from '../auth/current-user.decorator'
@@ -25,7 +25,13 @@ export class OrdersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @CurrentUser() user: any) {
+  findOne(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: any) {
     return this.ordersService.findOne(id, user.id)
+  }
+
+  /** PATCH /orders/:id/cancel */
+  @Patch(':id/cancel')
+  cancel(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: any) {
+    return this.ordersService.cancel(id, user.id)
   }
 }
