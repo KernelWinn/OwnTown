@@ -1,4 +1,11 @@
 import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, SetMetadata } from '@nestjs/common'
+import { Throttle } from '@nestjs/throttler'
+import { IsEnum } from 'class-validator'
+
+class UpdateOrderStatusDto {
+  @IsEnum(['pending', 'confirmed', 'packed', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'])
+  status!: string
+}
 import { AdminService } from './admin.service'
 import { ProductsService } from '../products/products.service'
 import { OrdersService } from '../orders/orders.service'
@@ -25,6 +32,7 @@ export class AdminController {
 
   @Post('auth/login')
   @Public()
+  @Throttle({ default: { ttl: 900000, limit: 5 } })  // 5 attempts per 15 min
   login(@Body() body: { email: string; password: string }) {
     return this.adminService.login(body.email, body.password)
   }
@@ -45,8 +53,8 @@ export class AdminController {
   }
 
   @Put('orders/:id/status')
-  updateOrderStatus(@Param('id') id: string, @Body('status') status: string) {
-    return this.ordersService.updateStatus(id, status)
+  updateOrderStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
+    return this.ordersService.updateStatus(id, dto.status)
   }
 
   @Post('orders/:id/ship')

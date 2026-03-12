@@ -25,12 +25,15 @@ export class PaymentService {
     return { razorpayOrderId: data.id, amount: data.amount, currency: data.currency, keyId }
   }
 
-  verifyPayment(body: {
-    razorpayOrderId: string
-    razorpayPaymentId: string
-    razorpaySignature: string
-    orderId: string
-  }) {
+  async verifyPayment(
+    body: {
+      razorpayOrderId: string
+      razorpayPaymentId: string
+      razorpaySignature: string
+      orderId: string
+    },
+    userId: string,
+  ) {
     const secret = this.config.getOrThrow('RAZORPAY_KEY_SECRET')
     const expected = createHmac('sha256', secret)
       .update(`${body.razorpayOrderId}|${body.razorpayPaymentId}`)
@@ -39,6 +42,8 @@ export class PaymentService {
     if (expected !== body.razorpaySignature) {
       throw new BadRequestException('Invalid payment signature')
     }
+    // Verify the authenticated user owns this order before confirming
+    await this.ordersService.findOne(body.orderId, userId)
     return this.ordersService.updateStatus(body.orderId, 'confirmed')
   }
 

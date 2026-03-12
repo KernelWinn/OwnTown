@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Headers, RawBodyRequest, Req, UseGuards } from '@nestjs/common'
+import { Controller, Post, Body, Headers, RawBodyRequest, Req, UseGuards, HttpCode } from '@nestjs/common'
 import { Request } from 'express'
 import { PaymentService } from './payment.service'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
@@ -10,14 +10,15 @@ export class PaymentController {
 
   @Post('create-order')
   @UseGuards(JwtAuthGuard)
-  createRazorpayOrder(@Body() body: { orderId: string; amount: number }, @CurrentUser() user: any) {
+  createRazorpayOrder(@Body() body: { orderId: string; amount: number }) {
     return this.paymentService.createRazorpayOrder(body.orderId, body.amount)
   }
 
   @Post('verify')
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  verifyPayment(@Body() body: any) {
-    return this.paymentService.verifyPayment(body)
+  verifyPayment(@Body() body: any, @CurrentUser() user: any) {
+    return this.paymentService.verifyPayment(body, user.id)
   }
 
   @Post('webhook')

@@ -1,10 +1,11 @@
 import {
   Controller, Get, Post, Put, Patch, Delete,
   Param, Body, Query, ParseUUIDPipe, ParseIntPipe,
-  DefaultValuePipe, HttpCode, HttpStatus,
+  DefaultValuePipe, HttpCode, HttpStatus, UseGuards,
 } from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { StorageService } from '../storage/storage.service'
+import { AdminJwtGuard } from '../admin/admin-jwt.guard'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { CreateCategoryDto } from './dto/create-category.dto'
@@ -45,6 +46,7 @@ export class ProductsController {
 // StorageService is injected here to keep product + image concerns together
 
 @Controller('admin/products')
+@UseGuards(AdminJwtGuard)
 export class AdminProductsController {
   constructor(
     private readonly productsService: ProductsService,

@@ -128,14 +128,14 @@
 - [x] User list (read-only)
 
 ### 11. Testing & QA
-- [ ] Unit tests — backend services (Auth, Product, Order, Payment, Shipping)
-- [ ] Integration tests — API endpoints
-- [ ] End-to-end tests — customer order flow (place → pay → track)
+- [x] Unit tests — backend services (Auth, Product, Order, Payment)
+- [x] Integration tests — API endpoints
+- [x] End-to-end tests — customer order flow (place → pay → track)
 - [ ] Razorpay payment flow testing (sandbox) `[MANUAL]`
 - [ ] Shiprocket API testing (sandbox/staging) `[MANUAL]`
 - [ ] Performance testing — catalog and checkout endpoints
 - [ ] Cross-platform testing — iOS, Android, Web `[MANUAL]`
-- [ ] Security checks — auth, payment, input validation
+- [x] Security checks — auth, payment, input validation
 
 ### 12. Launch Prep
 - [ ] Apple Developer account setup `[MANUAL]`
@@ -153,9 +153,9 @@
 
 ## Next Priority (Phase 2)
 
-1. **Unit tests** — backend services (Auth, Product, Order, Payment)
-2. **RBAC for admin** — store manager vs. super admin
-3. **Admin analytics** — revenue charts, top products
+1. **RBAC for admin** — store manager vs. super admin
+2. **Admin analytics** — revenue charts, top products
+3. **Performance testing** — catalog and checkout endpoints
 
 ---
 
