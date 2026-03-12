@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-  --brand: #7C3AED;
+  --sq-green: #00B43C;
+  --sq-dark: #1A1A1A;
 }
 
 body {
-  @apply bg-gray-50 text-gray-900;
+  @apply bg-[#F7F7F7] text-[#1A1A1A] font-sans;
+  -webkit-font-smoothing: antialiased;
 }
 
 @layer components {
@@ -15,11 +19,23 @@ body {
     @apply block text-sm font-medium text-gray-700 mb-1;
   }
   .field-input {
-    @apply w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm
-           focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent
-           bg-white placeholder:text-gray-400;
+    @apply w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm
+           focus:outline-none focus:ring-2 focus:ring-[#00B43C] focus:border-transparent
+           bg-white placeholder:text-gray-400 transition;
   }
   .field-error {
     @apply text-red-500 text-xs mt-1;
+  }
+  .sq-card {
+    @apply bg-white border border-gray-200 rounded-lg;
+  }
+  .sq-btn-primary {
+    @apply bg-[#1A1A1A] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#2A2A2A] transition;
+  }
+  .sq-btn-green {
+    @apply bg-[#00B43C] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#009932] transition;
+  }
+  .sq-btn-ghost {
+    @apply text-[#1A1A1A] text-sm font-medium px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition;
   }
 }

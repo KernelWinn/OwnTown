@@ -1,34 +1,76 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { ShoppingCart, Package, IndianRupee, Users } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { api } from '@/lib/api'
 import { formatPrice } from '@owntown/utils'
+
+function StatCard({
+  label,
+  value,
+  sub,
+  trend,
+}: {
+  label: string
+  value: string | number
+  sub?: string
+  trend?: 'up' | 'down' | 'neutral'
+}) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-5">
+      <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">{label}</p>
+      <p className="text-3xl font-bold text-[#1A1A1A] leading-none mb-2">{value}</p>
+      {sub && (
+        <div className="flex items-center gap-1 mt-2">
+          {trend === 'up' && <TrendingUp size={13} className="text-[#00B43C]" />}
+          {trend === 'down' && <TrendingDown size={13} className="text-red-500" />}
+          {trend === 'neutral' && <Minus size={13} className="text-gray-400" />}
+          <p className={
+            trend === 'up' ? 'text-xs text-[#00B43C] font-medium'
+            : trend === 'down' ? 'text-xs text-red-500 font-medium'
+            : 'text-xs text-gray-400'
+          }>
+            {sub}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function DashboardStats() {
   const { data } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: () => api.get('/admin/stats').then(r => r.data),
+    refetchInterval: 60_000,
   })
-
-  const stats = [
-    { label: "Today's Orders", value: data?.todayOrders ?? 0, icon: ShoppingCart, color: 'bg-blue-50 text-blue-600' },
-    { label: "Today's Revenue", value: formatPrice(data?.todayRevenue ?? 0), icon: IndianRupee, color: 'bg-green-50 text-green-600' },
-    { label: 'Pending Orders', value: data?.pendingOrders ?? 0, icon: Package, color: 'bg-amber-50 text-amber-600' },
-    { label: 'Total Customers', value: data?.totalCustomers ?? 0, icon: Users, color: 'bg-violet-50 text-violet-600' },
-  ]
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map(({ label, value, icon: Icon, color }) => (
-        <div key={label} className="bg-white rounded-2xl border border-gray-100 p-5">
-          <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center mb-3`}>
-            <Icon size={20} />
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
-          <p className="text-sm text-gray-500 mt-0.5">{label}</p>
-        </div>
-      ))}
+      <StatCard
+        label="Today's Orders"
+        value={data?.todayOrders ?? '—'}
+        sub="Orders placed today"
+        trend="neutral"
+      />
+      <StatCard
+        label="Today's Revenue"
+        value={data?.todayRevenue != null ? formatPrice(data.todayRevenue) : '—'}
+        sub="Gross revenue"
+        trend="up"
+      />
+      <StatCard
+        label="Pending"
+        value={data?.pendingOrders ?? '—'}
+        sub="Awaiting action"
+        trend={data?.pendingOrders > 10 ? 'down' : 'neutral'}
+      />
+      <StatCard
+        label="Customers"
+        value={data?.totalCustomers ?? '—'}
+        sub="Registered users"
+        trend="up"
+      />
     </div>
   )
 }

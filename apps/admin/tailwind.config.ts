@@ -5,10 +5,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: '#7C3AED',
+        sq: {
+          green: '#00B43C',
+          'green-light': '#E6F9ED',
+          dark: '#1A1A1A',
+          'dark-hover': '#2A2A2A',
+          'dark-active': '#333333',
+          ink: '#1A1A1A',
+          'ink-secondary': '#4B5563',
+          'ink-muted': '#9CA3AF',
+          surface: '#FFFFFF',
+          bg: '#F7F7F7',
+          border: '#E5E7EB',
+          'border-dark': '#D1D5DB',
+        }
       },
-      borderRadius: {
-        '2xl': '16px',
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
     },
   },
