@@ -10,6 +10,7 @@ import { ShippingModule } from './shipping/shipping.module'
 import { NotificationModule } from './notification/notification.module'
 import { AdminModule } from './admin/admin.module'
 import { StorageModule } from './storage/storage.module'
+import { AddressesModule } from './addresses/addresses.module'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StorageModule } from './storage/storage.module'
     DatabaseModule,
     StorageModule,
     AuthModule,
+    AddressesModule,
     ProductsModule,
     OrdersModule,
     PaymentModule,

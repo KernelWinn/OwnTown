@@ -2,13 +2,13 @@ import { IsString, IsEnum, IsOptional, IsUUID } from 'class-validator'
 
 export class CreateOrderDto {
   @IsUUID()
-  addressId: string
+  addressId!: string
 
   @IsUUID()
-  deliverySlotId: string
+  deliverySlotId!: string
 
   @IsEnum(['upi', 'card', 'wallet', 'netbanking', 'cod'])
-  paymentMethod: string
+  paymentMethod!: string
 
   @IsOptional()
   @IsString()
