@@ -10,6 +10,13 @@ import { useCartStore } from '@/store/cart'
 import { colors } from '@/constants/theme'
 import type { Address, DeliverySlot } from '@owntown/types'
 
+interface ServiceabilityResult {
+  pincode: string
+  isServiceable: boolean
+  estimatedDays?: number
+  couriers?: string[]
+}
+
 export default function CheckoutScreen() {
   const [selectedAddress, setSelectedAddress] = useState<string>('')
   const [selectedSlot, setSelectedSlot] = useState<string>('')
@@ -19,6 +26,17 @@ export default function CheckoutScreen() {
   const { data: addresses = [], isLoading: addrLoading } = useQuery<Address[]>({
     queryKey: ['addresses'],
     queryFn: () => api.get('/addresses').then(r => r.data),
+  })
+
+  const selectedAddrData = addresses.find(a => a.id === selectedAddress)
+
+  const { data: serviceability, isFetching: svcLoading } = useQuery<ServiceabilityResult>({
+    queryKey: ['serviceability', selectedAddrData?.pincode],
+    queryFn: () =>
+      api.get(`/shipping/serviceability?pincode=${selectedAddrData!.pincode}`)
+        .then(r => r.data),
+    enabled: !!selectedAddrData?.pincode,
+    staleTime: 5 * 60 * 1000, // cache 5 min per pincode
   })
 
   const { data: slots = [], isLoading: slotsLoading } = useQuery<DeliverySlot[]>({
@@ -39,7 +57,11 @@ export default function CheckoutScreen() {
     },
   })
 
-  const canPlace = !!selectedAddress && !!selectedSlot && itemCount > 0
+  const canPlace =
+    !!selectedAddress &&
+    !!selectedSlot &&
+    itemCount > 0 &&
+    serviceability?.isServiceable !== false
 
   // Group slots by date
   const slotsByDate = slots.reduce<Record<string, DeliverySlot[]>>((acc, s) => {
@@ -110,6 +132,30 @@ export default function CheckoutScreen() {
                     {addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}, {addr.city} – {addr.pincode}
                   </Text>
                   <Text style={styles.addrPhone}>{addr.phone}</Text>
+                  {selectedAddress === addr.id && (
+                    svcLoading ? (
+                      <View style={styles.svcRow}>
+                        <ActivityIndicator size={12} color={colors.primary} />
+                        <Text style={styles.svcChecking}>Checking delivery…</Text>
+                      </View>
+                    ) : serviceability ? (
+                      <View style={styles.svcRow}>
+                        <Icon
+                          source={serviceability.isServiceable ? 'check-circle' : 'close-circle'}
+                          size={14}
+                          color={serviceability.isServiceable ? colors.success : colors.error}
+                        />
+                        <Text style={[
+                          styles.svcText,
+                          { color: serviceability.isServiceable ? colors.success : colors.error },
+                        ]}>
+                          {serviceability.isServiceable
+                            ? `Delivery available${serviceability.estimatedDays ? ` · ${serviceability.estimatedDays} day${serviceability.estimatedDays > 1 ? 's' : ''}` : ''}`
+                            : 'Not deliverable to this pincode'}
+                        </Text>
+                      </View>
+                    ) : null
+                  )}
                 </View>
                 {addr.isDefault && (
                   <View style={styles.defaultBadge}>
@@ -268,6 +314,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6, paddingVertical: 2, alignSelf: 'flex-start',
   },
   defaultBadgeText: { fontSize: 10, color: colors.primary, fontWeight: '700' },
+  svcRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
+  svcChecking: { fontSize: 11, color: colors.textSecondary },
+  svcText: { fontSize: 11, fontWeight: '600' },
 
   // Slots
   dateLabel: { fontSize: 13, fontWeight: '700', color: colors.textSecondary, marginBottom: 8 },

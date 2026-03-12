@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
-import { Text, TextInput, Button, Icon } from 'react-native-paper'
+import { Text, TextInput, Button, Icon, ActivityIndicator } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { colors } from '@/constants/theme'
 
@@ -41,6 +41,14 @@ export default function NewAddressScreen() {
     setErrors(e)
     return Object.keys(e).length === 0
   }
+
+  const { data: serviceability, isFetching: svcLoading } = useQuery({
+    queryKey: ['serviceability', form.pincode],
+    queryFn: () =>
+      api.get(`/shipping/serviceability?pincode=${form.pincode}`).then(r => r.data),
+    enabled: /^\d{6}$/.test(form.pincode),
+    staleTime: 5 * 60 * 1000,
+  })
 
   const mutation = useMutation({
     mutationFn: () => api.post('/addresses', {
@@ -125,14 +133,39 @@ export default function NewAddressScreen() {
             />
           </View>
         </View>
-        <Field
-          label="Pincode *"
-          value={form.pincode}
-          onChangeText={set('pincode')}
-          error={errors.pincode}
-          keyboardType="numeric"
-          maxLength={6}
-        />
+        <View>
+          <Field
+            label="Pincode *"
+            value={form.pincode}
+            onChangeText={set('pincode')}
+            error={errors.pincode}
+            keyboardType="numeric"
+            maxLength={6}
+          />
+          {/^\d{6}$/.test(form.pincode) && (
+            <View style={styles.svcRow}>
+              {svcLoading ? (
+                <>
+                  <ActivityIndicator size={12} color={colors.primary} />
+                  <Text style={styles.svcChecking}>Checking delivery availability…</Text>
+                </>
+              ) : serviceability ? (
+                <>
+                  <Icon
+                    source={serviceability.isServiceable ? 'check-circle' : 'close-circle'}
+                    size={14}
+                    color={serviceability.isServiceable ? colors.success : colors.error}
+                  />
+                  <Text style={[styles.svcText, { color: serviceability.isServiceable ? colors.success : colors.error }]}>
+                    {serviceability.isServiceable
+                      ? `We deliver here${serviceability.estimatedDays ? ` · ~${serviceability.estimatedDays} day${serviceability.estimatedDays > 1 ? 's' : ''}` : ''}`
+                      : 'Sorry, we don\'t deliver to this pincode yet'}
+                  </Text>
+                </>
+              ) : null}
+            </View>
+          )}
+        </View>
 
         {mutation.isError && (
           <Text style={styles.serverError}>Failed to save address. Please try again.</Text>
@@ -211,4 +244,7 @@ const styles = StyleSheet.create({
   footer: { padding: 16, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: colors.border },
   saveBtn: { borderRadius: 12 },
   saveBtnContent: { paddingVertical: 6 },
+  svcRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4, marginLeft: 4 },
+  svcChecking: { fontSize: 11, color: colors.textSecondary },
+  svcText: { fontSize: 11, fontWeight: '600' },
 })
