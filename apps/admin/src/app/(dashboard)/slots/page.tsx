@@ -35,8 +35,8 @@ function SlotFormModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
-        <h2 className="text-lg font-bold text-gray-900">{initial.id ? 'Edit Slot' : 'New Delivery Slot'}</h2>
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 space-y-4">
+        <h2 className="text-lg font-bold text-[#1A1A1A]">{initial.id ? 'Edit Slot' : 'New Delivery Slot'}</h2>
 
         <div className="space-y-3">
           <div>
@@ -45,7 +45,7 @@ function SlotFormModal({
               type="date"
               value={form.date}
               onChange={e => set('date', e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -55,7 +55,7 @@ function SlotFormModal({
                 type="time"
                 value={form.startTime}
                 onChange={e => set('startTime', e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
               />
             </div>
             <div>
@@ -64,7 +64,7 @@ function SlotFormModal({
                 type="time"
                 value={form.endTime}
                 onChange={e => set('endTime', e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
               />
             </div>
           </div>
@@ -75,7 +75,7 @@ function SlotFormModal({
               placeholder="e.g. Morning (9AM–12PM)"
               value={form.label}
               onChange={e => set('label', e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ function SlotFormModal({
               min={1}
               value={form.maxOrders}
               onChange={e => set('maxOrders', Number(e.target.value))}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
             />
           </div>
         </div>
@@ -93,14 +93,14 @@ function SlotFormModal({
         <div className="flex gap-3 pt-2">
           <button
             onClick={onClose}
-            className="flex-1 border border-gray-200 text-gray-700 rounded-xl py-2.5 text-sm font-medium hover:bg-gray-50 transition"
+            className="flex-1 border border-gray-200 text-gray-700 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 transition"
           >
             Cancel
           </button>
           <button
             onClick={() => onSave(form)}
             disabled={saving || !form.date || !form.startTime || !form.endTime || !form.label}
-            className="flex-1 bg-violet-600 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-violet-700 transition disabled:opacity-50"
+            className="flex-1 bg-[#1A1A1A] text-white rounded-lg py-2.5 text-sm font-medium hover:bg-black/80 transition disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
@@ -162,12 +162,12 @@ export default function SlotsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Delivery Slots</h1>
-          <p className="text-sm text-gray-400 mt-0.5">{slots.length} slots</p>
+          <h1 className="text-2xl font-bold text-[#1A1A1A]">Delivery Slots</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{slots.length} slots</p>
         </div>
         <button
           onClick={() => setModalSlot(EMPTY_FORM)}
-          className="flex items-center gap-2 bg-violet-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-violet-700 transition"
+          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-black/80 transition"
         >
           <Plus size={16} />
           New Slot
@@ -180,7 +180,7 @@ export default function SlotsPage() {
           type="date"
           value={filterDate}
           onChange={e => setFilterDate(e.target.value)}
-          className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 bg-white"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A] bg-white"
         />
         {filterDate && (
           <button
@@ -195,22 +195,22 @@ export default function SlotsPage() {
       {isLoading ? (
         <div className="text-center py-20 text-gray-400">Loading slots...</div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Date</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Time</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Label</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Capacity</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Status</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Time</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Label</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Capacity</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
                 <th className="px-5 py-3.5" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {slots.map(slot => (
-                <tr key={slot.id} className="hover:bg-gray-50/50 transition">
-                  <td className="px-5 py-4 font-medium text-gray-900">{slot.date}</td>
+                <tr key={slot.id} className="hover:bg-gray-50 transition">
+                  <td className="px-5 py-4 font-medium text-[#1A1A1A]">{slot.date}</td>
                   <td className="px-5 py-4 text-gray-600 font-mono text-xs">
                     {slot.startTime} – {slot.endTime}
                   </td>
@@ -219,7 +219,7 @@ export default function SlotsPage() {
                     <div className="flex items-center gap-2">
                       <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-violet-400 rounded-full"
+                          className="h-full bg-[#00B43C] rounded-full"
                           style={{ width: `${Math.min(100, (slot.currentOrders / slot.maxOrders) * 100)}%` }}
                         />
                       </div>
@@ -235,8 +235,8 @@ export default function SlotsPage() {
                     >
                       {slot.isActive ? (
                         <>
-                          <ToggleRight size={18} className="text-green-500" />
-                          <span className="text-green-600">Active</span>
+                          <ToggleRight size={18} className="text-[#00B43C]" />
+                          <span className="text-[#00B43C]">Active</span>
                         </>
                       ) : (
                         <>
@@ -257,7 +257,7 @@ export default function SlotsPage() {
                           label: slot.label,
                           maxOrders: slot.maxOrders,
                         })}
-                        className="p-1.5 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition"
+                        className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded-lg transition"
                       >
                         <Pencil size={15} />
                       </button>

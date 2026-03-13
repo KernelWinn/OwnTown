@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Pencil, Trash2, Package, AlertTriangle } from 'lucide-react'
+import { Plus, Pencil, Trash2, Package, AlertTriangle, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { productsApi } from '@/lib/api-helpers'
 import { formatPrice } from '@owntown/utils'
@@ -13,6 +13,7 @@ export default function ProductsPage() {
   const qc = useQueryClient()
   const [editProduct, setEditProduct] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [search, setSearch] = useState('')
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ['admin-products'],
@@ -38,37 +39,56 @@ export default function ProductsPage() {
     setShowForm(true)
   }
 
+  const filtered = products.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  )
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 bg-violet-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-violet-700 transition"
-        >
-          <Plus size={16} />
-          Add Product
-        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-[#1A1A1A]">Products</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{products.length} total products</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A] bg-white w-52"
+            />
+          </div>
+          <button
+            onClick={openCreate}
+            className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-black/80 transition"
+          >
+            <Plus size={16} />
+            Add Product
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
         <div className="text-center py-20 text-gray-400">Loading products...</div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Product</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">SKU</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Price</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Stock</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Status</th>
-                <th className="text-right px-5 py-3.5 font-semibold text-gray-600">Actions</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Product</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">SKU</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Price</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Stock</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                <th className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {products.map(product => (
-                <tr key={product.id} className="hover:bg-gray-50/50 transition">
+              {filtered.map(product => (
+                <tr key={product.id} className="hover:bg-gray-50 transition">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       {product.images[0] ? (
@@ -83,14 +103,14 @@ export default function ProductsPage() {
                         </div>
                       )}
                       <div>
-                        <p className="font-semibold text-gray-900">{product.name}</p>
+                        <p className="font-semibold text-[#1A1A1A]">{product.name}</p>
                         <p className="text-gray-400 text-xs">{product.unit}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-5 py-4 text-gray-500 font-mono text-xs">{product.sku}</td>
                   <td className="px-5 py-4">
-                    <p className="font-semibold text-gray-900">{formatPrice(product.price)}</p>
+                    <p className="font-semibold text-[#1A1A1A]">{formatPrice(product.price)}</p>
                     {product.mrp > product.price && (
                       <p className="text-gray-400 text-xs line-through">{formatPrice(product.mrp)}</p>
                     )}
@@ -110,7 +130,7 @@ export default function ProductsPage() {
                   <td className="px-5 py-4">
                     <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
                       product.isActive
-                        ? 'bg-green-50 text-green-700'
+                        ? 'bg-[#E6F9ED] text-[#00843C]'
                         : 'bg-gray-100 text-gray-500'
                     }`}>
                       {product.isActive ? 'Active' : 'Inactive'}
@@ -120,7 +140,7 @@ export default function ProductsPage() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => openEdit(product)}
-                        className="p-2 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition"
+                        className="p-2 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded-lg transition"
                       >
                         <Pencil size={15} />
                       </button>
@@ -138,10 +158,10 @@ export default function ProductsPage() {
                   </td>
                 </tr>
               ))}
-              {products.length === 0 && (
+              {filtered.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-16 text-gray-400">
-                    No products yet. Add your first product.
+                    {search ? 'No products match your search.' : 'No products yet. Add your first product.'}
                   </td>
                 </tr>
               )}

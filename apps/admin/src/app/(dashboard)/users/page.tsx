@@ -40,8 +40,10 @@ export default function UsersPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Users</h1>
-        <span className="text-sm text-gray-400">{users.length} total</span>
+        <div>
+          <h1 className="text-2xl font-bold text-[#1A1A1A]">Users</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{users.length} total</p>
+        </div>
       </div>
 
       {/* Search */}
@@ -52,33 +54,33 @@ export default function UsersPage() {
           placeholder="Search by name, phone or email..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 bg-white"
+          className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A] bg-white"
         />
       </div>
 
       {isLoading ? (
         <div className="text-center py-20 text-gray-400">Loading users...</div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">User</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Phone</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Email</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Joined</th>
-                <th className="text-left px-5 py-3.5 font-semibold text-gray-600">Status</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">User</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Joined</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {filtered.map(user => (
-                <tr key={user.id} className="hover:bg-gray-50/50 transition">
+                <tr key={user.id} className="hover:bg-gray-50 transition">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
-                        <span className="text-xs font-bold text-violet-700">{initials(user)}</span>
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                        <span className="text-xs font-bold text-[#1A1A1A]">{initials(user)}</span>
                       </div>
-                      <span className="font-semibold text-gray-900">
+                      <span className="font-semibold text-[#1A1A1A]">
                         {user.name ?? <span className="text-gray-400 font-normal italic">No name</span>}
                       </span>
                     </div>
@@ -91,7 +93,7 @@ export default function UsersPage() {
                   <td className="px-5 py-4">
                     <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                       user.isActive
-                        ? 'bg-green-100 text-green-700'
+                        ? 'bg-[#E6F9ED] text-[#00843C]'
                         : 'bg-red-100 text-red-600'
                     }`}>
                       {user.isActive ? 'Active' : 'Inactive'}

@@ -39,10 +39,13 @@ export default function CategoriesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-[#1A1A1A]">Categories</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{categories.length} total categories</p>
+        </div>
         <button
           onClick={() => { setEditCategory(null); setShowForm(true) }}
-          className="flex items-center gap-2 bg-violet-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-violet-700 transition"
+          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-black/80 transition"
         >
           <Plus size={16} />
           Add Category
@@ -54,25 +57,25 @@ export default function CategoriesPage() {
       ) : (
         <div className="space-y-3">
           {topLevel.map(cat => (
-            <div key={cat.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div key={cat.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               {/* Parent category row */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
                 <div className="flex items-center gap-3">
                   {cat.imageUrl ? (
                     <img src={cat.imageUrl} alt={cat.name} className="w-9 h-9 rounded-lg object-cover" />
                   ) : (
-                    <div className="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center">
-                      <Tag size={15} className="text-violet-500" />
+                    <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
+                      <Tag size={15} className="text-gray-500" />
                     </div>
                   )}
                   <div>
-                    <p className="font-semibold text-gray-900">{cat.name}</p>
+                    <p className="font-semibold text-[#1A1A1A]">{cat.name}</p>
                     <p className="text-xs text-gray-400">/{cat.slug}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    cat.isActive ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'
+                    cat.isActive ? 'bg-[#E6F9ED] text-[#00843C]' : 'bg-gray-100 text-gray-500'
                   }`}>
                     {cat.isActive ? 'Active' : 'Inactive'}
                   </span>
@@ -81,7 +84,7 @@ export default function CategoriesPage() {
                   </span>
                   <button
                     onClick={() => { setEditCategory(cat); setShowForm(true) }}
-                    className="p-1.5 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition"
+                    className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded-lg transition"
                   >
                     <Pencil size={14} />
                   </button>
@@ -107,7 +110,7 @@ export default function CategoriesPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => { setEditCategory(sub); setShowForm(true) }}
-                      className="p-1.5 text-gray-400 hover:text-violet-600 rounded-lg transition"
+                      className="p-1.5 text-gray-400 hover:text-[#1A1A1A] hover:bg-gray-100 rounded-lg transition"
                     >
                       <Pencil size={13} />
                     </button>
@@ -115,7 +118,7 @@ export default function CategoriesPage() {
                       onClick={() => {
                         if (confirm(`Delete "${sub.name}"?`)) deleteMutation.mutate(sub.id)
                       }}
-                      className="p-1.5 text-gray-400 hover:text-red-500 rounded-lg transition"
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
                     >
                       <Trash2 size={13} />
                     </button>
@@ -126,7 +129,7 @@ export default function CategoriesPage() {
           ))}
 
           {topLevel.length === 0 && (
-            <div className="text-center py-16 text-gray-400 bg-white rounded-2xl border border-gray-100">
+            <div className="text-center py-16 text-gray-400 bg-white border border-gray-200 rounded-lg">
               No categories yet. Add your first category.
             </div>
           )}
