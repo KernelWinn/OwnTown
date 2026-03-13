@@ -128,7 +128,8 @@ export class ProductsService {
     `)
 
     // strip internal _score from response
-    return (rows as any[]).map(({ _score, ...rest }) => rest)
+    const resultRows: any[] = (rows as any).rows ?? rows
+    return resultRows.map(({ _score, ...rest }) => rest)
   }
 
   async recordSearchEvent(

@@ -7,15 +7,22 @@ import { AppModule } from './app.module'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
-  app.use(helmet())
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') ?? [
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://localhost:8081',
+  ]
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGINS?.split(',') ?? [
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://localhost:8081',
-    ],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, origin ?? '*')
+      } else {
+        callback(new Error(`CORS: origin ${origin} not allowed`))
+      }
+    },
     credentials: true,
   })
+  app.use(helmet())
 
   app.useGlobalPipes(
     new ValidationPipe({
