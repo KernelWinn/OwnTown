@@ -8,10 +8,19 @@ export const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+function getAuthState() {
+  try {
+    const raw = localStorage.getItem('auth-storage')
+    return raw ? JSON.parse(raw)?.state ?? {} : {}
+  } catch {
+    return {}
+  }
+}
+
 api.interceptors.request.use(config => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('accessToken')
-    if (token) config.headers.Authorization = `Bearer ${token}`
+    const { accessToken } = getAuthState()
+    if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
   }
   return config
 })
@@ -23,14 +32,15 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true
       try {
-        const refreshToken = localStorage.getItem('refreshToken')
+        const { refreshToken } = getAuthState()
         const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken })
-        localStorage.setItem('accessToken', data.accessToken)
+        // update persisted store with new token
+        const stored = getAuthState()
+        localStorage.setItem('auth-storage', JSON.stringify({ state: { ...stored, accessToken: data.accessToken }, version: 0 }))
         original.headers.Authorization = `Bearer ${data.accessToken}`
         return api(original)
       } catch {
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('auth-storage')
         window.location.href = '/login'
       }
     }

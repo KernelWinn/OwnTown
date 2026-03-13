@@ -1,16 +1,24 @@
 import {
   Controller, Get, Post, Put, Patch, Delete,
   Param, Body, Query, ParseUUIDPipe, ParseIntPipe,
-  DefaultValuePipe, HttpCode, HttpStatus, UseGuards,
+  DefaultValuePipe, HttpCode, HttpStatus, UseGuards, Request,
 } from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { StorageService } from '../storage/storage.service'
 import { AdminJwtGuard } from '../admin/admin-jwt.guard'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateStockDto } from './dto/update-stock.dto'
 import { CreateVariantDto } from './products.service'
+import { IsString, IsIn, IsOptional, IsUUID } from 'class-validator'
+
+class SearchEventDto {
+  @IsUUID() productId!: string
+  @IsIn(['search_click', 'add_to_cart', 'purchase']) eventType!: 'search_click' | 'add_to_cart' | 'purchase'
+  @IsOptional() @IsString() query?: string
+}
 
 // ─── Customer routes (/products) ─────────────────────────────────────────────
 
@@ -32,8 +40,19 @@ export class ProductsController {
   }
 
   @Get('search')
-  search(@Query('q') q: string) {
-    return this.productsService.search(q ?? '')
+  search(@Query('q') q: string, @Query('userId') userId?: string) {
+    return this.productsService.search(q ?? '', userId)
+  }
+
+  @Post('search-event')
+  @UseGuards(JwtAuthGuard)
+  recordEvent(@Body() dto: SearchEventDto, @Request() req: any) {
+    return this.productsService.recordSearchEvent(
+      dto.productId,
+      dto.eventType,
+      req.user?.id,
+      dto.query,
+    )
   }
 
   @Get(':id')

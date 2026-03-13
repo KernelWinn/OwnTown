@@ -35,7 +35,7 @@ export default function Header() {
           <div className="w-8 h-8 bg-[#007a78] rounded-xl flex items-center justify-center">
             <span className="text-white font-black text-sm">OT</span>
           </div>
-          <span className="font-black text-lg text-[#2C2C2C] hidden sm:block">OwnTown</span>
+          <span className="font-black text-xl text-[#2C2C2C] hidden sm:block font-display tracking-tight">OwnTown</span>
         </Link>
 
         {/* Search bar */}
@@ -65,7 +65,7 @@ export default function Header() {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
           <Link href="/cart" className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
             <ShoppingCart size={20} className="text-[#2C2C2C]" />
             {count > 0 && (

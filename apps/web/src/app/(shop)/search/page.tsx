@@ -1,15 +1,25 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
+import { useAuthStore } from '@/store/auth'
 import ProductCard from '@/components/ProductCard'
 import type { Product } from '@owntown/types'
 import { Search, X } from 'lucide-react'
 
+function recordEvent(
+  productId: string,
+  eventType: 'search_click' | 'add_to_cart' | 'purchase',
+  query?: string,
+) {
+  api.post('/products/search-event', { productId, eventType, query }).catch(() => {})
+}
+
 export default function SearchPage() {
   const searchParams = useSearchParams()
+  const user = useAuthStore((s) => s.user)
   const [q, setQ] = useState(searchParams.get('q') ?? '')
   const [debouncedQ, setDebouncedQ] = useState(q)
 
@@ -19,12 +29,22 @@ export default function SearchPage() {
   }, [q])
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
-    queryKey: ['search', debouncedQ],
-    queryFn: () =>
-      debouncedQ.length >= 2
-        ? api.get(`/products/search?q=${encodeURIComponent(debouncedQ)}`).then((r) => r.data)
-        : api.get('/products?limit=60').then((r) => r.data),
+    queryKey: ['search', debouncedQ, user?.id],
+    queryFn: () => {
+      if (debouncedQ.length >= 2) {
+        const params = new URLSearchParams({ q: debouncedQ })
+        if (user?.id) params.set('userId', user.id)
+        return api.get(`/products/search?${params}`).then((r) => r.data)
+      }
+      return api.get('/products?limit=60').then((r) => r.data)
+    },
   })
+
+  const handleProductClick = useCallback((productId: string) => {
+    if (debouncedQ.length >= 2) {
+      recordEvent(productId, 'search_click', debouncedQ)
+    }
+  }, [debouncedQ])
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
@@ -59,9 +79,16 @@ export default function SearchPage() {
         </div>
       ) : (
         <>
-          <p className="text-sm text-gray-500 font-medium">{products.length} product{products.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm text-gray-500 font-medium">
+            {products.length} product{products.length !== 1 ? 's' : ''}
+            {debouncedQ && <span className="ml-1">for &ldquo;{debouncedQ}&rdquo;</span>}
+          </p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {products.map((p) => <ProductCard key={p.id} product={p} />)}
+            {products.map((p) => (
+              <div key={p.id} onClick={() => handleProductClick(p.id)}>
+                <ProductCard product={p} />
+              </div>
+            ))}
           </div>
         </>
       )}

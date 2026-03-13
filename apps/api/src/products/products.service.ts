@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException, ConflictException } from '@nestjs/common'
 import { eq, and, sql } from 'drizzle-orm'
 import { DB } from '../database/database.module'
-import { products, categories, productVariants } from '../database/schema'
+import { products, categories, productVariants, searchEvents } from '../database/schema'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { CreateCategoryDto } from './dto/create-category.dto'
@@ -58,17 +58,92 @@ export class ProductsService {
     return product
   }
 
-  async search(query: string) {
-    return this.db
-      .select()
-      .from(products)
-      .where(
-        and(
-          eq(products.isActive, true),
-          sql`to_tsvector('english', ${products.name}) @@ plainto_tsquery('english', ${query})`,
+  async search(query: string, userId?: string) {
+    const q = query.trim()
+    if (!q) return this.findAll({ limit: 40 })
+
+    // Custom scored search:
+    //   text_score   × 10  — full-text rank on name + description + tags
+    //   prefix_boost × 5   — name starts with query (exact-prefix match)
+    //   popularity   × 3   — capped global order count signal
+    //   behavior     × 4   — personal: click/cart/purchase history (user-specific)
+    //   featured     × 2   — editorial boost
+    //   in_stock     × 1.5 — available products rank higher
+    //   discount     × 1   — has a price reduction
+    const rows = await this.db.execute(sql`
+      WITH
+        text_rank AS (
+          SELECT id,
+            ts_rank(
+              to_tsvector('english',
+                ${products.name} || ' ' ||
+                COALESCE(${products.description}, '') || ' ' ||
+                array_to_string(${products.tags}, ' ')
+              ),
+              plainto_tsquery('english', ${q})
+            ) AS rank
+          FROM products
+          WHERE is_active = true
         ),
-      )
-      .limit(20)
+        popularity AS (
+          SELECT product_id, COUNT(*)::float AS order_count
+          FROM order_items
+          GROUP BY product_id
+        ),
+        behavior AS (
+          SELECT product_id,
+            SUM(
+              CASE event_type
+                WHEN 'purchase'      THEN 4
+                WHEN 'add_to_cart'   THEN 2
+                WHEN 'search_click'  THEN 1
+                ELSE 0
+              END
+            )::float AS score
+          FROM search_events
+          WHERE user_id = ${userId ?? null}
+          GROUP BY product_id
+        )
+      SELECT p.*,
+        (
+          COALESCE(tr.rank, 0) * 10.0
+          + CASE WHEN p.name ILIKE ${q + '%'} THEN 5.0 ELSE 0 END
+          + LEAST(COALESCE(pop.order_count, 0) * 0.1, 3.0)
+          + LEAST(COALESCE(beh.score, 0) * 0.5, 4.0)
+          + CASE WHEN p.is_featured  THEN 2.0  ELSE 0 END
+          + CASE WHEN p.stock_quantity > p.low_stock_threshold THEN 1.5 ELSE 0 END
+          + CASE WHEN p.mrp > p.price THEN 1.0  ELSE 0 END
+        ) AS _score
+      FROM products p
+      LEFT JOIN text_rank  tr  ON tr.id            = p.id
+      LEFT JOIN popularity pop ON pop.product_id   = p.id
+      LEFT JOIN behavior   beh ON beh.product_id   = p.id
+      WHERE p.is_active = true
+        AND (
+          tr.rank > 0
+          OR p.name ILIKE ${'%' + q + '%'}
+        )
+      ORDER BY _score DESC
+      LIMIT 40
+    `)
+
+    // strip internal _score from response
+    return (rows as any[]).map(({ _score, ...rest }) => rest)
+  }
+
+  async recordSearchEvent(
+    productId: string,
+    eventType: 'search_click' | 'add_to_cart' | 'purchase',
+    userId?: string,
+    query?: string,
+  ) {
+    await this.db.insert(searchEvents).values({
+      productId,
+      eventType,
+      userId: userId ?? null,
+      query: query ?? null,
+    })
+    return { ok: true }
   }
 
   async findLowStock() {
