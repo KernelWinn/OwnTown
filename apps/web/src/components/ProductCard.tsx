@@ -40,14 +40,20 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/product/${product.id}`} className="tgtg-card flex flex-col hover:shadow-elevated transition-shadow group">
       {/* Image */}
-      <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
-        <Image
-          src={imgUrl(product.images?.[0] ?? '')}
-          alt={product.name}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-          sizes="(max-width: 640px) 50vw, 220px"
-        />
+      <div className="relative aspect-[4/3] bg-[#e6f5f5] overflow-hidden">
+        {product.images?.[0] ? (
+          <Image
+            src={imgUrl(product.images[0])}
+            alt={product.name}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 640px) 50vw, 220px"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-4xl select-none">
+            🌿
+          </div>
+        )}
         {discount > 0 && (
           <span className="absolute top-2 left-2 bg-[#FF8C42] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
             -{discount}%
