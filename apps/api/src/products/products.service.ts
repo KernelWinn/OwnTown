@@ -29,11 +29,11 @@ export interface CreateVariantDto {
 export class ProductsService {
   constructor(@Inject(DB) private readonly db: any) {}
 
-  async findAll({ featured, limit }: { featured?: boolean; limit: number }) {
-    const where = featured
-      ? and(eq(products.isActive, true), eq(products.isFeatured, true))
-      : eq(products.isActive, true)
-    return this.db.select().from(products).where(where).limit(limit)
+  async findAll({ featured, limit, categoryId }: { featured?: boolean; limit: number; categoryId?: string }) {
+    const conditions = [eq(products.isActive, true)]
+    if (featured) conditions.push(eq(products.isFeatured, true))
+    if (categoryId) conditions.push(eq(products.categoryId, categoryId))
+    return this.db.select().from(products).where(and(...conditions)).limit(limit)
   }
 
   async findAllAdmin(limit = 50, offset = 0) {
@@ -58,9 +58,9 @@ export class ProductsService {
     return product
   }
 
-  async search(query: string, userId?: string) {
+  async search(query: string, userId?: string, categoryId?: string) {
     const q = query.trim()
-    if (!q) return this.findAll({ limit: 40 })
+    if (!q) return this.findAll({ limit: 40, categoryId })
 
     // Custom scored search:
     //   text_score   × 10  — full-text rank on name + description + tags
@@ -123,6 +123,7 @@ export class ProductsService {
           tr.rank > 0
           OR p.name ILIKE ${'%' + q + '%'}
         )
+        ${categoryId ? sql`AND p.category_id = ${categoryId}` : sql``}
       ORDER BY _score DESC
       LIMIT 40
     `)

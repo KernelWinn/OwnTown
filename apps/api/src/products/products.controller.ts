@@ -30,8 +30,9 @@ export class ProductsController {
   findAll(
     @Query('featured') featured?: string,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
+    @Query('categoryId') categoryId?: string,
   ) {
-    return this.productsService.findAll({ featured: featured === 'true', limit: limit! })
+    return this.productsService.findAll({ featured: featured === 'true', limit: limit!, categoryId })
   }
 
   @Get('categories')
@@ -40,8 +41,12 @@ export class ProductsController {
   }
 
   @Get('search')
-  search(@Query('q') q: string, @Query('userId') userId?: string) {
-    return this.productsService.search(q ?? '', userId)
+  search(
+    @Query('q') q: string,
+    @Query('userId') userId?: string,
+    @Query('categoryId') categoryId?: string,
+  ) {
+    return this.productsService.search(q ?? '', userId, categoryId)
   }
 
   @Post('search-event')
