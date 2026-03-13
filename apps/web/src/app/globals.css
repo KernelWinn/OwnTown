@@ -5,8 +5,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --brand: #25a855;
-  --brand-dark: #1a8a43;
+  --brand: #007a78;
+  --brand-dark: #005f5d;
   --charcoal: #2C2C2C;
 }
 
@@ -20,8 +20,8 @@ body {
     @apply bg-white rounded-2xl shadow-card overflow-hidden;
   }
   .tgtg-btn {
-    @apply bg-[#25a855] text-white font-semibold px-6 py-3 rounded-xl
-           hover:bg-[#1a8a43] transition-colors disabled:opacity-50
+    @apply bg-[#007a78] text-white font-semibold px-6 py-3 rounded-xl
+           hover:bg-[#005f5d] transition-colors disabled:opacity-50
            inline-flex items-center justify-center gap-2;
   }
   .tgtg-btn-outline {
@@ -29,20 +29,20 @@ body {
            hover:bg-gray-50 transition-colors inline-flex items-center justify-center gap-2;
   }
   .tgtg-btn-sm {
-    @apply bg-[#25a855] text-white font-semibold px-4 py-2 rounded-lg text-sm
-           hover:bg-[#1a8a43] transition-colors disabled:opacity-50
+    @apply bg-[#007a78] text-white font-semibold px-4 py-2 rounded-lg text-sm
+           hover:bg-[#005f5d] transition-colors disabled:opacity-50
            inline-flex items-center justify-center gap-1.5;
   }
   .tgtg-input {
     @apply w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm
-           focus:outline-none focus:ring-2 focus:ring-[#25a855]/20 focus:border-[#25a855]
+           focus:outline-none focus:ring-2 focus:ring-[#007a78]/20 focus:border-[#007a78]
            placeholder:text-gray-400 transition;
   }
   .tgtg-badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
   }
   .qty-btn {
-    @apply w-8 h-8 rounded-full border-2 border-[#25a855] text-[#25a855]
-           flex items-center justify-center hover:bg-green-50 transition font-bold;
+    @apply w-8 h-8 rounded-full border-2 border-[#007a78] text-[#007a78]
+           flex items-center justify-center hover:bg-[#e6f5f5] transition font-bold;
   }
 }

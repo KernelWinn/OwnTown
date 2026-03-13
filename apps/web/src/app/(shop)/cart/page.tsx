@@ -46,7 +46,7 @@ export default function CartPage() {
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm leading-tight line-clamp-2">{item.name}</p>
                 <p className="text-xs text-gray-400 mt-0.5">{item.unit}</p>
-                <p className="font-bold text-[#25a855] mt-1">₹{(item.price / 100).toFixed(2)}</p>
+                <p className="font-bold text-[#007a78] mt-1">₹{(item.price / 100).toFixed(2)}</p>
               </div>
               <div className="flex flex-col items-end gap-3 flex-shrink-0">
                 <button onClick={() => removeItem(item.productId, item.variantId)} className="text-gray-300 hover:text-red-400 transition-colors">
@@ -54,12 +54,12 @@ export default function CartPage() {
                 </button>
                 <div className="flex items-center gap-2">
                   <button onClick={() => updateQty(item.productId, item.quantity - 1, item.variantId)}
-                    className="w-7 h-7 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition">
+                    className="w-7 h-7 rounded-full border-2 border-[#007a78] text-[#007a78] flex items-center justify-center hover:bg-[#e6f5f5] transition">
                     <Minus size={12} />
                   </button>
                   <span className="w-6 text-center font-bold text-sm">{item.quantity}</span>
                   <button onClick={() => updateQty(item.productId, item.quantity + 1, item.variantId)}
-                    className="w-7 h-7 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition">
+                    className="w-7 h-7 rounded-full border-2 border-[#007a78] text-[#007a78] flex items-center justify-center hover:bg-[#e6f5f5] transition">
                     <Plus size={12} />
                   </button>
                 </div>
@@ -79,7 +79,7 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Delivery</span>
-                <span className="font-semibold text-[#25a855]">Free</span>
+                <span className="font-semibold text-[#007a78]">Free</span>
               </div>
               <div className="border-t border-gray-100 pt-3 flex justify-between">
                 <span className="font-black text-[#2C2C2C]">Total</span>

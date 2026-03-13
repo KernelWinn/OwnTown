@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
       {/* Avatar card */}
       <div className="tgtg-card p-6 flex items-center gap-5">
-        <div className="w-16 h-16 rounded-full bg-[#25a855] flex items-center justify-center flex-shrink-0 shadow-md">
+        <div className="w-16 h-16 rounded-full bg-[#007a78] flex items-center justify-center flex-shrink-0 shadow-md">
           <span className="text-white text-2xl font-black">{user.name?.[0]?.toUpperCase() ?? 'U'}</span>
         </div>
         <div>
@@ -47,8 +47,8 @@ export default function ProfilePage() {
       {/* Menu */}
       <div className="tgtg-card divide-y divide-gray-50">
         <Link href="/orders" className="flex items-center gap-3 px-6 py-4 hover:bg-gray-50 transition-colors">
-          <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
-            <Package size={16} className="text-[#25a855]" />
+          <div className="w-9 h-9 rounded-xl bg-[#e6f5f5] flex items-center justify-center">
+            <Package size={16} className="text-[#007a78]" />
           </div>
           <span className="flex-1 font-semibold text-sm">My orders</span>
           <ChevronRight size={16} className="text-gray-300" />

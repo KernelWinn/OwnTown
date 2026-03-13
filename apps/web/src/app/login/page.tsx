@@ -46,10 +46,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex">
       {/* Left panel — decorative */}
-      <div className="hidden lg:flex w-1/2 bg-[#25a855] flex-col items-center justify-center p-16 text-white">
+      <div className="hidden lg:flex w-1/2 bg-[#007a78] flex-col items-center justify-center p-16 text-white">
         <Link href="/" className="flex items-center gap-3 mb-12">
           <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center">
-            <span className="text-[#25a855] font-black text-sm">OT</span>
+            <span className="text-[#007a78] font-black text-sm">OT</span>
           </div>
           <span className="font-black text-2xl">OwnTown</span>
         </Link>
@@ -67,7 +67,7 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-8 h-8 bg-[#25a855] rounded-xl flex items-center justify-center">
+            <div className="w-8 h-8 bg-[#007a78] rounded-xl flex items-center justify-center">
               <span className="text-white font-black text-sm">OT</span>
             </div>
             <span className="font-black text-xl text-[#2C2C2C]">OwnTown</span>
@@ -110,7 +110,7 @@ export default function LoginPage() {
             {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
             <button
               onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-              className="font-bold text-[#25a855] hover:underline"
+              className="font-bold text-[#007a78] hover:underline"
             >
               {mode === 'login' ? 'Sign up' : 'Sign in'}
             </button>

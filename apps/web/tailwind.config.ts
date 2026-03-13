@@ -11,14 +11,14 @@ const config: Config = {
           200: '#a9e8ca',
           300: '#72d6aa',
           400: '#3dbd86',
-          500: '#25a855',  // TGtG primary
-          600: '#1a8a43',
+          500: '#007a78',  // TGtG primary
+          600: '#005f5d',
           700: '#177039',
           800: '#165a2f',
           900: '#134a27',
         },
-        brand: '#25a855',
-        'brand-dark': '#1a8a43',
+        brand: '#007a78',
+        'brand-dark': '#005f5d',
         charcoal: '#2C2C2C',
         orange: '#FF8C42',
       },

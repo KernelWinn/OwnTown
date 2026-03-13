@@ -72,14 +72,14 @@ export default function ProductCard({ product }: { product: Product }) {
             <div className="flex items-center gap-1" onClick={(e) => e.preventDefault()}>
               <button
                 onClick={(e) => { e.preventDefault(); updateQty(product.id, cartItem.quantity - 1) }}
-                className="w-7 h-7 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition"
+                className="w-7 h-7 rounded-full border-2 border-[#007a78] text-[#007a78] flex items-center justify-center hover:bg-[#e6f5f5] transition"
               >
                 <Minus size={11} />
               </button>
               <span className="w-5 text-center text-sm font-bold">{cartItem.quantity}</span>
               <button
                 onClick={(e) => { e.preventDefault(); updateQty(product.id, cartItem.quantity + 1) }}
-                className="w-7 h-7 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition"
+                className="w-7 h-7 rounded-full border-2 border-[#007a78] text-[#007a78] flex items-center justify-center hover:bg-[#e6f5f5] transition"
               >
                 <Plus size={11} />
               </button>
@@ -87,7 +87,7 @@ export default function ProductCard({ product }: { product: Product }) {
           ) : (
             <button
               onClick={handleAdd}
-              className="w-8 h-8 rounded-full bg-[#25a855] text-white flex items-center justify-center hover:bg-[#1a8a43] transition shadow-sm"
+              className="w-8 h-8 rounded-full bg-[#007a78] text-white flex items-center justify-center hover:bg-[#005f5d] transition shadow-sm"
               aria-label="Add to cart"
             >
               <Plus size={15} />

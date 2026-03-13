@@ -12,7 +12,7 @@ const STATUS: Record<string, { label: string; className: string }> = {
   confirmed:  { label: 'Confirmed',  className: 'bg-blue-100 text-blue-700' },
   processing: { label: 'Processing', className: 'bg-blue-100 text-blue-700' },
   shipped:    { label: 'Shipped',    className: 'bg-purple-100 text-purple-700' },
-  delivered:  { label: 'Delivered',  className: 'bg-[#E8F8EE] text-[#25a855]' },
+  delivered:  { label: 'Delivered',  className: 'bg-[#E8F8EE] text-[#007a78]' },
   cancelled:  { label: 'Cancelled',  className: 'bg-red-100 text-red-600' },
 }
 
@@ -55,8 +55,8 @@ export default function OrdersPage() {
             return (
               <Link key={order.id} href={`/orders/${order.id}`}
                 className="tgtg-card flex items-center gap-4 p-5 hover:shadow-elevated transition-shadow">
-                <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center flex-shrink-0">
-                  <Package size={20} className="text-[#25a855]" />
+                <div className="w-12 h-12 rounded-2xl bg-[#e6f5f5] flex items-center justify-center flex-shrink-0">
+                  <Package size={20} className="text-[#007a78]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">

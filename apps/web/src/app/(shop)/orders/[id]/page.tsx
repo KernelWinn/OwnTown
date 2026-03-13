@@ -20,7 +20,7 @@ const STATUS: Record<string, { label: string; className: string }> = {
   confirmed:  { label: 'Confirmed',  className: 'bg-blue-100 text-blue-700' },
   processing: { label: 'Processing', className: 'bg-blue-100 text-blue-700' },
   shipped:    { label: 'Shipped',    className: 'bg-purple-100 text-purple-700' },
-  delivered:  { label: 'Delivered',  className: 'bg-[#E8F8EE] text-[#25a855]' },
+  delivered:  { label: 'Delivered',  className: 'bg-[#E8F8EE] text-[#007a78]' },
   cancelled:  { label: 'Cancelled',  className: 'bg-red-100 text-red-600' },
 }
 
@@ -81,13 +81,13 @@ export default function OrderDetailPage() {
               <div className="relative flex justify-between">
                 <div className="absolute top-4 left-0 right-0 h-1 bg-gray-100 rounded-full" />
                 <div
-                  className="absolute top-4 left-0 h-1 bg-[#25a855] rounded-full transition-all duration-500"
+                  className="absolute top-4 left-0 h-1 bg-[#007a78] rounded-full transition-all duration-500"
                   style={{ width: stepIndex >= 0 ? `${(stepIndex / (STATUS_STEPS.length - 1)) * 100}%` : '0%' }}
                 />
                 {STATUS_STEPS.map((step, i) => (
                   <div key={step} className="relative flex flex-col items-center gap-2 z-10">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                      i <= stepIndex ? 'bg-[#25a855] shadow-md' : 'bg-white border-2 border-gray-200'
+                      i <= stepIndex ? 'bg-[#007a78] shadow-md' : 'bg-white border-2 border-gray-200'
                     }`}>
                       {i <= stepIndex ? (
                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -97,7 +97,7 @@ export default function OrderDetailPage() {
                         <div className="w-2 h-2 rounded-full bg-gray-300" />
                       )}
                     </div>
-                    <span className={`text-[10px] font-bold capitalize ${i <= stepIndex ? 'text-[#25a855]' : 'text-gray-400'}`}>{step}</span>
+                    <span className={`text-[10px] font-bold capitalize ${i <= stepIndex ? 'text-[#007a78]' : 'text-gray-400'}`}>{step}</span>
                   </div>
                 ))}
               </div>
@@ -108,7 +108,7 @@ export default function OrderDetailPage() {
           <div className="tgtg-card overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-50">
               <div className="flex items-center gap-2">
-                <Package size={16} className="text-[#25a855]" />
+                <Package size={16} className="text-[#007a78]" />
                 <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Items</p>
               </div>
             </div>
@@ -140,7 +140,7 @@ export default function OrderDetailPage() {
           {order.deliveryAddress && (
             <div className="tgtg-card p-5">
               <div className="flex items-center gap-2 mb-3">
-                <MapPin size={15} className="text-[#25a855]" />
+                <MapPin size={15} className="text-[#007a78]" />
                 <p className="text-xs font-bold uppercase tracking-wide text-gray-400">Delivery address</p>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed">
@@ -153,10 +153,10 @@ export default function OrderDetailPage() {
           {order.trackingNumber && (
             <div className="tgtg-card p-5 bg-[#E8F8EE] border border-green-100">
               <div className="flex items-center gap-2 mb-2">
-                <Truck size={15} className="text-[#25a855]" />
-                <p className="text-xs font-bold uppercase tracking-wide text-[#25a855]">Tracking</p>
+                <Truck size={15} className="text-[#007a78]" />
+                <p className="text-xs font-bold uppercase tracking-wide text-[#007a78]">Tracking</p>
               </div>
-              <p className="text-sm font-mono font-bold text-[#25a855]">{order.trackingNumber}</p>
+              <p className="text-sm font-mono font-bold text-[#007a78]">{order.trackingNumber}</p>
             </div>
           )}
         </div>

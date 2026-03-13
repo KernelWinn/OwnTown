@@ -32,7 +32,7 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-8 h-8 bg-[#25a855] rounded-xl flex items-center justify-center">
+          <div className="w-8 h-8 bg-[#007a78] rounded-xl flex items-center justify-center">
             <span className="text-white font-black text-sm">OT</span>
           </div>
           <span className="font-black text-lg text-[#2C2C2C] hidden sm:block">OwnTown</span>
@@ -55,7 +55,7 @@ export default function Header() {
               href={href}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 href === '/' ? pathname === '/' : pathname.startsWith(href)
-                  ? 'text-[#25a855] bg-green-50'
+                  ? 'text-[#007a78] bg-[#e6f5f5]'
                   : 'text-gray-600 hover:text-[#2C2C2C] hover:bg-gray-100'
               }`}
             >
@@ -69,7 +69,7 @@ export default function Header() {
           <Link href="/cart" className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
             <ShoppingCart size={20} className="text-[#2C2C2C]" />
             {count > 0 && (
-              <span className="absolute top-0.5 right-0.5 bg-[#25a855] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+              <span className="absolute top-0.5 right-0.5 bg-[#007a78] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                 {count > 99 ? '99+' : count}
               </span>
             )}
@@ -78,7 +78,7 @@ export default function Header() {
           {user ? (
             <div className="relative group">
               <button className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors">
-                <div className="w-7 h-7 rounded-full bg-[#25a855] flex items-center justify-center">
+                <div className="w-7 h-7 rounded-full bg-[#007a78] flex items-center justify-center">
                   <span className="text-white text-xs font-bold">{user.name?.[0]?.toUpperCase()}</span>
                 </div>
                 <span className="text-sm font-medium hidden sm:block">{user.name?.split(' ')[0]}</span>
@@ -118,7 +118,7 @@ export default function Header() {
           ))}
           {!user && (
             <Link href="/login" onClick={() => setMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl text-sm font-semibold text-[#25a855]">
+              className="block px-4 py-3 rounded-xl text-sm font-semibold text-[#007a78]">
               Sign in
             </Link>
           )}

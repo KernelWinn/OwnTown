@@ -32,7 +32,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-[#25a855] text-white">
+      <section className="bg-[#007a78] text-white">
         <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center gap-10">
           <div className="flex-1">
             <h1 className="text-4xl md:text-5xl font-black leading-tight mb-4">
@@ -43,7 +43,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/search"
-              className="inline-flex items-center gap-2 bg-white text-[#25a855] font-bold px-8 py-4 rounded-2xl hover:bg-green-50 transition-colors text-base shadow-lg"
+              className="inline-flex items-center gap-2 bg-white text-[#007a78] font-bold px-8 py-4 rounded-2xl hover:bg-[#e6f5f5] transition-colors text-base shadow-lg"
             >
               Browse products <ChevronRight size={18} />
             </Link>
@@ -74,7 +74,7 @@ export default function HomePage() {
                         />
                       </div>
                     ) : (
-                      <div className="w-full h-full bg-green-50 flex items-center justify-center text-2xl">🌿</div>
+                      <div className="w-full h-full bg-[#e6f5f5] flex items-center justify-center text-2xl">🌿</div>
                     )}
                   </div>
                   <span className="text-xs font-semibold text-center leading-tight line-clamp-2">{cat.name}</span>
@@ -89,7 +89,7 @@ export default function HomePage() {
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-black text-[#2C2C2C]">Featured picks</h2>
-              <Link href="/search" className="flex items-center gap-1 text-sm font-semibold text-[#25a855] hover:underline">
+              <Link href="/search" className="flex items-center gap-1 text-sm font-semibold text-[#007a78] hover:underline">
                 See all <ChevronRight size={15} />
               </Link>
             </div>

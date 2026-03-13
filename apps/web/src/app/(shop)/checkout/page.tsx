@@ -52,7 +52,7 @@ export default function CheckoutPage() {
           {/* Address */}
           <div className="tgtg-card p-6 space-y-4">
             <div className="flex items-center gap-2 mb-1">
-              <MapPin size={18} className="text-[#25a855]" />
+              <MapPin size={18} className="text-[#007a78]" />
               <h2 className="font-black text-[#2C2C2C]">Delivery address</h2>
             </div>
             <input value={address.line1} onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))}
@@ -72,11 +72,11 @@ export default function CheckoutPage() {
           {/* Payment */}
           <div className="tgtg-card p-6">
             <div className="flex items-center gap-2 mb-4">
-              <CreditCard size={18} className="text-[#25a855]" />
+              <CreditCard size={18} className="text-[#007a78]" />
               <h2 className="font-black text-[#2C2C2C]">Payment</h2>
             </div>
-            <label className="flex items-center gap-3 border-2 border-[#25a855] bg-green-50 rounded-2xl px-5 py-4 cursor-pointer">
-              <CheckCircle2 size={20} className="text-[#25a855]" />
+            <label className="flex items-center gap-3 border-2 border-[#007a78] bg-[#e6f5f5] rounded-2xl px-5 py-4 cursor-pointer">
+              <CheckCircle2 size={20} className="text-[#007a78]" />
               <div>
                 <p className="font-semibold text-sm">Cash on delivery</p>
                 <p className="text-xs text-gray-500">Pay when your order arrives</p>
@@ -99,7 +99,7 @@ export default function CheckoutPage() {
           <div className="border-t border-gray-100 pt-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-500">Delivery</span>
-              <span className="font-semibold text-[#25a855]">Free</span>
+              <span className="font-semibold text-[#007a78]">Free</span>
             </div>
             <div className="flex justify-between">
               <span className="font-black text-[#2C2C2C]">Total</span>

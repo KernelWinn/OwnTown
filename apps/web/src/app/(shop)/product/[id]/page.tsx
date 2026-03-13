@@ -106,7 +106,7 @@ export default function ProductPage() {
               {product.images.map((img, i) => (
                 <button key={i} onClick={() => setActiveImg(i)}
                   className={`flex-shrink-0 w-16 h-16 rounded-2xl overflow-hidden border-2 transition ${
-                    activeImg === i ? 'border-[#25a855]' : 'border-gray-100 hover:border-gray-300'
+                    activeImg === i ? 'border-[#007a78]' : 'border-gray-100 hover:border-gray-300'
                   }`}>
                   <Image src={imgUrl(img)} alt="" width={64} height={64} className="object-cover w-full h-full" />
                 </button>
@@ -118,7 +118,7 @@ export default function ProductPage() {
         {/* Details */}
         <div className="space-y-6 py-2">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-[#25a855] bg-green-50 px-3 py-1 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#007a78] bg-[#e6f5f5] px-3 py-1 rounded-full">
               {product.unit}
             </span>
             <h1 className="text-3xl font-black text-[#2C2C2C] mt-3 leading-tight">{product.name}</h1>
@@ -144,7 +144,7 @@ export default function ProductPage() {
                   onClick={() => setSelectedVariant(null)}
                   className={`px-4 py-2 text-sm font-semibold rounded-xl border-2 transition ${
                     !selectedVariant
-                      ? 'border-[#25a855] bg-green-50 text-[#25a855]'
+                      ? 'border-[#007a78] bg-[#e6f5f5] text-[#007a78]'
                       : 'border-gray-200 text-gray-600 hover:border-gray-300'
                   }`}
                 >
@@ -156,7 +156,7 @@ export default function ProductPage() {
                     onClick={() => setSelectedVariant(v)}
                     className={`px-4 py-2 text-sm font-semibold rounded-xl border-2 transition ${
                       selectedVariant?.id === v.id
-                        ? 'border-[#25a855] bg-green-50 text-[#25a855]'
+                        ? 'border-[#007a78] bg-[#e6f5f5] text-[#007a78]'
                         : 'border-gray-200 text-gray-600 hover:border-gray-300'
                     }`}
                   >
@@ -180,12 +180,12 @@ export default function ProductPage() {
             {cartItem ? (
               <div className="flex items-center gap-4">
                 <button onClick={() => updateQty(product.id, cartItem.quantity - 1, selectedVariant?.id)}
-                  className="w-11 h-11 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition">
+                  className="w-11 h-11 rounded-full border-2 border-[#007a78] text-[#007a78] flex items-center justify-center hover:bg-[#e6f5f5] transition">
                   <Minus size={16} />
                 </button>
                 <span className="text-2xl font-black w-8 text-center">{cartItem.quantity}</span>
                 <button onClick={() => updateQty(product.id, cartItem.quantity + 1, selectedVariant?.id)}
-                  className="w-11 h-11 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition">
+                  className="w-11 h-11 rounded-full border-2 border-[#007a78] text-[#007a78] flex items-center justify-center hover:bg-[#e6f5f5] transition">
                   <Plus size={16} />
                 </button>
                 <span className="text-sm text-gray-500 font-medium">in cart</span>
@@ -202,7 +202,7 @@ export default function ProductPage() {
           <div className="flex flex-wrap gap-3 pt-2">
             {['Same-day delivery', 'Fresh guaranteed', 'Easy returns'].map((badge) => (
               <span key={badge} className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full">
-                <Star size={11} className="text-[#25a855]" fill="#25a855" />
+                <Star size={11} className="text-[#007a78]" fill="#007a78" />
                 {badge}
               </span>
             ))}
