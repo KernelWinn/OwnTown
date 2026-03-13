@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { AdminJwtGuard } from '../admin/admin-jwt.guard'
 import { ProcurementService } from './procurement.service'
-import { CreateSupplierDto } from './dto/create-supplier.dto'
+import { CreateSupplierDto, UpdateSupplierDto } from './dto/create-supplier.dto'
 import { CreatePoDto } from './dto/create-po.dto'
 import { UpdatePoStatusDto } from './dto/update-po-status.dto'
 import { CreateGrnDto } from './dto/create-grn.dto'
@@ -31,7 +31,7 @@ export class ProcurementController {
   }
 
   @Put('suppliers/:id')
-  updateSupplier(@Param('id', ParseUUIDPipe) id: string, @Body() dto: CreateSupplierDto) {
+  updateSupplier(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateSupplierDto) {
     return this.svc.updateSupplier(id, dto)
   }
 

@@ -60,4 +60,9 @@ export class CreateProductDto {
   @IsArray()
   @IsString({ each: true })
   images?: string[]   // S3 keys, set after upload
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  optionNames?: string[]
 }
