@@ -23,47 +23,47 @@ export default function SearchPage() {
     queryFn: () =>
       debouncedQ.length >= 2
         ? api.get(`/products/search?q=${encodeURIComponent(debouncedQ)}`).then((r) => r.data)
-        : api.get('/products?limit=40').then((r) => r.data),
-    enabled: true,
+        : api.get('/products?limit=60').then((r) => r.data),
   })
 
   return (
-    <div>
-      <div className="relative mb-4">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Search</h1>
+        <p className="text-sm text-gray-500 mt-1">Find products by name</p>
+      </div>
+
+      <div className="relative max-w-lg">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search products..."
-          className="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-9 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10"
+          className="field-input pl-10 pr-10"
         />
         {q && (
-          <button
-            onClick={() => setQ('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-          >
-            <X size={16} />
+          <button onClick={() => setQ('')} className="absolute right-3 top-1/2 -translate-y-1/2 sq-icon-btn">
+            <X size={14} />
           </button>
         )}
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="card animate-pulse h-52 bg-gray-100" />
-          ))}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => <div key={i} className="sq-card animate-pulse h-56" />)}
         </div>
       ) : products.length === 0 ? (
-        <div className="text-center py-16 text-gray-500 text-sm">
-          No products found for &quot;{q}&quot;
+        <div className="sq-card p-16 text-center text-gray-500 text-sm">
+          No products found for &ldquo;{q}&rdquo;
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        <>
+          <p className="text-sm text-gray-500">{products.length} product{products.length !== 1 ? 's' : ''}</p>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {products.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </>
       )}
     </div>
   )

@@ -1,14 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { useCartStore } from '@/store/cart'
 import type { Product, ProductVariant } from '@owntown/types'
 import Image from 'next/image'
 import { ChevronLeft, Minus, Plus, ShoppingCart } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 const CDN = process.env.NEXT_PUBLIC_CDN_URL ?? ''
@@ -28,7 +27,6 @@ export default function ProductPage() {
     queryKey: ['product', id],
     queryFn: () => api.get(`/products/${id}`).then((r) => r.data),
   })
-
   const { data: variants = [] } = useQuery<ProductVariant[]>({
     queryKey: ['variants', id],
     queryFn: () => api.get(`/products/${id}/variants`).then((r) => r.data),
@@ -41,10 +39,15 @@ export default function ProductPage() {
 
   if (isLoading || !product) {
     return (
-      <div className="animate-pulse space-y-4 pt-4">
-        <div className="aspect-square bg-gray-200 rounded-xl" />
-        <div className="h-6 bg-gray-200 rounded w-2/3" />
-        <div className="h-4 bg-gray-200 rounded w-1/3" />
+      <div className="animate-pulse space-y-4">
+        <div className="h-8 bg-gray-200 rounded w-32" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="aspect-square bg-gray-200 rounded-lg" />
+          <div className="space-y-4">
+            <div className="h-8 bg-gray-200 rounded w-3/4" />
+            <div className="h-6 bg-gray-200 rounded w-1/3" />
+          </div>
+        </div>
       </div>
     )
   }
@@ -74,126 +77,121 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="-mx-4">
-      {/* Back button */}
+    <div className="space-y-6">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1 text-sm text-gray-600 px-4 py-2"
+        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1A1A1A] transition"
       >
-        <ChevronLeft size={18} /> Back
+        <ChevronLeft size={16} /> Back
       </button>
 
-      {/* Images */}
-      <div className="relative aspect-square bg-white">
-        <Image
-          src={imgUrl(product.images?.[activeImg] ?? '')}
-          alt={product.name}
-          fill
-          className="object-contain"
-          sizes="640px"
-          priority
-        />
-        {discount > 0 && (
-          <span className="absolute top-3 left-3 bg-[#00B43C] text-white text-xs font-bold px-2 py-1 rounded">
-            {discount}% off
-          </span>
-        )}
-      </div>
-
-      {/* Thumbnails */}
-      {product.images && product.images.length > 1 && (
-        <div className="flex gap-2 px-4 py-3 overflow-x-auto">
-          {product.images.map((img, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveImg(i)}
-              className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 ${
-                activeImg === i ? 'border-[#00B43C]' : 'border-gray-200'
-              }`}
-            >
-              <Image src={imgUrl(img)} alt="" width={56} height={56} className="object-cover w-full h-full" />
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div className="px-4 py-4 space-y-4">
-        {/* Name & price */}
-        <div>
-          <p className="text-xs text-gray-500 mb-1">{product.unit}</p>
-          <h1 className="text-lg font-semibold">{product.name}</h1>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-xl font-bold">₹{(effectivePrice / 100).toFixed(2)}</span>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        {/* Images */}
+        <div className="space-y-3">
+          <div className="relative aspect-square sq-card overflow-hidden">
+            <Image
+              src={imgUrl(product.images?.[activeImg] ?? '')}
+              alt={product.name}
+              fill
+              className="object-contain p-4"
+              sizes="600px"
+              priority
+            />
             {discount > 0 && (
-              <span className="text-sm text-gray-400 line-through">₹{(effectiveMrp / 100).toFixed(2)}</span>
+              <span className="absolute top-3 left-3 bg-[#00B43C] text-white text-xs font-bold px-2 py-1 rounded-md">
+                {discount}% off
+              </span>
             )}
           </div>
-        </div>
-
-        {/* Variants */}
-        {variants.length > 0 && (
-          <div>
-            <p className="text-sm font-medium mb-2">Variants</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedVariant(null)}
-                className={`px-3 py-1.5 text-sm rounded-lg border ${
-                  !selectedVariant
-                    ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white'
-                    : 'border-gray-200 bg-white'
-                }`}
-              >
-                Default
-              </button>
-              {variants.map((v) => (
+          {product.images && product.images.length > 1 && (
+            <div className="flex gap-2">
+              {product.images.map((img, i) => (
                 <button
-                  key={v.id}
-                  onClick={() => setSelectedVariant(v)}
-                  className={`px-3 py-1.5 text-sm rounded-lg border ${
-                    selectedVariant?.id === v.id
-                      ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white'
-                      : 'border-gray-200 bg-white'
+                  key={i}
+                  onClick={() => setActiveImg(i)}
+                  className={`w-16 h-16 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
+                    activeImg === i ? 'border-[#1A1A1A]' : 'border-gray-200'
                   }`}
                 >
-                  {v.title}
+                  <Image src={imgUrl(img)} alt="" width={64} height={64} className="object-cover w-full h-full" />
                 </button>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Description */}
-        {product.description && (
-          <div>
-            <p className="text-sm font-medium mb-1">About this product</p>
-            <p className="text-sm text-gray-600 leading-relaxed">{product.description}</p>
-          </div>
-        )}
-
-        {/* Add to cart */}
-        <div className="pt-2">
-          {cartItem ? (
-            <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-1">
-              <button
-                onClick={() => updateQty(product.id, cartItem.quantity - 1, selectedVariant?.id)}
-                className="qty-btn"
-              >
-                <Minus size={16} />
-              </button>
-              <span className="font-semibold">{cartItem.quantity}</span>
-              <button
-                onClick={() => updateQty(product.id, cartItem.quantity + 1, selectedVariant?.id)}
-                className="qty-btn"
-              >
-                <Plus size={16} />
-              </button>
-            </div>
-          ) : (
-            <button onClick={handleAdd} className="btn-primary w-full flex items-center justify-center gap-2">
-              <ShoppingCart size={18} />
-              Add to cart
-            </button>
           )}
+        </div>
+
+        {/* Details */}
+        <div className="space-y-5">
+          <div>
+            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">{product.unit}</p>
+            <h1 className="text-2xl font-bold leading-snug">{product.name}</h1>
+            <div className="flex items-baseline gap-3 mt-2">
+              <span className="text-2xl font-bold">₹{(effectivePrice / 100).toFixed(2)}</span>
+              {discount > 0 && (
+                <span className="text-base text-gray-400 line-through">₹{(effectiveMrp / 100).toFixed(2)}</span>
+              )}
+              {discount > 0 && (
+                <span className="text-sm font-semibold text-[#00B43C]">Save {discount}%</span>
+              )}
+            </div>
+          </div>
+
+          {/* Variants */}
+          {variants.length > 0 && (
+            <div>
+              <p className="field-label">Variants</p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedVariant(null)}
+                  className={`px-3 py-1.5 text-sm rounded-lg border font-medium transition ${
+                    !selectedVariant ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white' : 'border-gray-200 bg-white hover:border-gray-400'
+                  }`}
+                >
+                  Default
+                </button>
+                {variants.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setSelectedVariant(v)}
+                    className={`px-3 py-1.5 text-sm rounded-lg border font-medium transition ${
+                      selectedVariant?.id === v.id ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white' : 'border-gray-200 bg-white hover:border-gray-400'
+                    }`}
+                  >
+                    {v.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Description */}
+          {product.description && (
+            <div>
+              <p className="field-label">About this product</p>
+              <p className="text-sm text-gray-600 leading-relaxed">{product.description}</p>
+            </div>
+          )}
+
+          {/* Add to cart */}
+          <div className="pt-2">
+            {cartItem ? (
+              <div className="flex items-center gap-3">
+                <button onClick={() => updateQty(product.id, cartItem.quantity - 1, selectedVariant?.id)} className="qty-btn w-9 h-9">
+                  <Minus size={14} />
+                </button>
+                <span className="w-8 text-center font-semibold text-lg">{cartItem.quantity}</span>
+                <button onClick={() => updateQty(product.id, cartItem.quantity + 1, selectedVariant?.id)} className="qty-btn w-9 h-9">
+                  <Plus size={14} />
+                </button>
+                <span className="text-sm text-gray-500 ml-1">in cart</span>
+              </div>
+            ) : (
+              <button onClick={handleAdd} className="sq-btn-green flex items-center gap-2">
+                <ShoppingCart size={16} />
+                Add to cart
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

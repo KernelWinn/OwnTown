@@ -1,12 +1,12 @@
-import Header from '@/components/layout/Header'
-import BottomNav from '@/components/layout/BottomNav'
+import { Sidebar } from '@/components/layout/Sidebar'
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <Header />
-      <main className="max-w-2xl mx-auto px-4 pb-24 pt-4">{children}</main>
-      <BottomNav />
-    </>
+    <div className="flex h-screen bg-[#F7F7F7]">
+      <Sidebar />
+      <main className="flex-1 overflow-auto">
+        <div className="max-w-7xl mx-auto p-8">{children}</div>
+      </main>
+    </div>
   )
 }

@@ -27,19 +27,11 @@ export default function LoginPage() {
     setLoading(true)
     try {
       if (mode === 'register') {
-        const { data } = await api.post('/auth/register', {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          password: form.password,
-        })
+        const { data } = await api.post('/auth/register', { name: form.name, email: form.email, phone: form.phone, password: form.password })
         setTokens(data.accessToken, data.refreshToken)
         setUser(data.user)
       } else {
-        const { data } = await api.post('/auth/login', {
-          email: form.email,
-          password: form.password,
-        })
+        const { data } = await api.post('/auth/login', { email: form.email, password: form.password })
         setTokens(data.accessToken, data.refreshToken)
         setUser(data.user)
       }
@@ -53,54 +45,46 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold text-[#1A1A1A]">OwnTown</Link>
+          <Link href="/" className="inline-flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-[#00B43C] rounded flex items-center justify-center">
+              <span className="text-white font-bold text-sm">OT</span>
+            </div>
+            <span className="text-xl font-bold text-[#1A1A1A]">OwnTown</span>
+          </Link>
+          <h1 className="text-xl font-bold text-[#1A1A1A]">
+            {mode === 'login' ? 'Sign in to your account' : 'Create an account'}
+          </h1>
           <p className="text-sm text-gray-500 mt-1">
-            {mode === 'login' ? 'Sign in to your account' : 'Create a new account'}
+            {mode === 'login' ? 'Welcome back' : 'Join OwnTown today'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="card space-y-3">
+        <form onSubmit={handleSubmit} className="sq-card p-6 space-y-4">
           {mode === 'register' && (
-            <input
-              value={form.name}
-              onChange={set('name')}
-              placeholder="Full name"
-              required
-              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10"
-            />
+            <div>
+              <label className="field-label">Full name</label>
+              <input value={form.name} onChange={set('name')} placeholder="Your name" required className="field-input" />
+            </div>
           )}
-          <input
-            type="email"
-            value={form.email}
-            onChange={set('email')}
-            placeholder="Email"
-            required
-            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10"
-          />
+          <div>
+            <label className="field-label">Email</label>
+            <input type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" required className="field-input" />
+          </div>
           {mode === 'register' && (
-            <input
-              type="tel"
-              value={form.phone}
-              onChange={set('phone')}
-              placeholder="Phone number"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10"
-            />
+            <div>
+              <label className="field-label">Phone (optional)</label>
+              <input type="tel" value={form.phone} onChange={set('phone')} placeholder="+91 98765 43210" className="field-input" />
+            </div>
           )}
-          <input
-            type="password"
-            value={form.password}
-            onChange={set('password')}
-            placeholder="Password"
-            required
-            minLength={6}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10"
-          />
-
-          <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
+          <div>
+            <label className="field-label">Password</label>
+            <input type="password" value={form.password} onChange={set('password')} placeholder="••••••••" required minLength={6} className="field-input" />
+          </div>
+          <button type="submit" disabled={loading} className="sq-btn-primary w-full disabled:opacity-60 mt-2">
             {loading ? '...' : mode === 'login' ? 'Sign in' : 'Create account'}
           </button>
         </form>
@@ -109,7 +93,7 @@ export default function LoginPage() {
           {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
           <button
             onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-            className="text-[#1A1A1A] font-semibold underline"
+            className="text-[#1A1A1A] font-semibold hover:underline"
           >
             {mode === 'login' ? 'Sign up' : 'Sign in'}
           </button>
