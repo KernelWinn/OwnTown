@@ -15,8 +15,8 @@ const schema = z.object({
   name: z.string().min(1, 'Required'),
   description: z.string().optional(),
   categoryId: z.string().uuid('Select a category'),
-  price: z.coerce.number().int().positive('Must be > 0'),
-  mrp: z.coerce.number().int().positive('Must be > 0'),
+  price: z.coerce.number().positive('Must be > 0').multipleOf(0.01, 'Max 2 decimal places'),
+  mrp: z.coerce.number().positive('Must be > 0').multipleOf(0.01, 'Max 2 decimal places'),
   unit: z.string().min(1, 'Required'),
   stockQuantity: z.coerce.number().int().min(0),
   lowStockThreshold: z.coerce.number().int().min(0).default(10),
@@ -268,7 +268,7 @@ export function ProductFormModal({ product, onClose, onSuccess }: Props) {
     defaultValues: product
       ? {
           name: product.name, description: product.description ?? '',
-          categoryId: product.categoryId, price: product.price, mrp: product.mrp,
+          categoryId: product.categoryId, price: product.price / 100, mrp: product.mrp / 100,
           unit: product.unit, stockQuantity: product.stockQuantity,
           lowStockThreshold: product.lowStockThreshold, sku: product.sku,
           barcode: product.barcode ?? '', gstCategory: product.gstCategory as any,
@@ -282,7 +282,13 @@ export function ProductFormModal({ product, onClose, onSuccess }: Props) {
 
   const mutation = useMutation({
     mutationFn: (data: FormValues) => {
-      const payload = { ...data, images, optionNames }
+      const payload = {
+        ...data,
+        price: Math.round(data.price * 100),
+        mrp: Math.round(data.mrp * 100),
+        images,
+        optionNames,
+      }
       return isEdit ? productsApi.update(product!.id, payload) : productsApi.create(payload)
     },
     onSuccess: () => {
@@ -424,14 +430,13 @@ export function ProductFormModal({ product, onClose, onSuccess }: Props) {
 
                 <div>
                   <label className="field-label">Selling Price (₹) *</label>
-                  <input {...register('price')} type="number" className="field-input" />
-                  {price > 0 && <p className="text-xs text-gray-400 mt-1">{formatPrice(price)}</p>}
+                  <input {...register('price')} type="number" step="0.01" min="0.01" className="field-input" placeholder="0.00" />
                   {errors.price && <p className="field-error">{errors.price.message}</p>}
                 </div>
 
                 <div>
                   <label className="field-label">MRP (₹) *</label>
-                  <input {...register('mrp')} type="number" className="field-input" />
+                  <input {...register('mrp')} type="number" step="0.01" min="0.01" className="field-input" placeholder="0.00" />
                   {mrp > 0 && price > 0 && mrp > price && (
                     <p className="text-xs text-[#00843C] mt-1">{Math.round(((mrp - price) / mrp) * 100)}% off</p>
                   )}
