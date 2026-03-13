@@ -38,31 +38,33 @@ export default function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <Link href={`/product/${product.id}`} className="sq-card flex flex-col overflow-hidden hover:shadow-sm transition-shadow">
-      <div className="relative aspect-square bg-gray-50">
+    <Link href={`/product/${product.id}`} className="tgtg-card flex flex-col hover:shadow-elevated transition-shadow group">
+      {/* Image */}
+      <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
         <Image
           src={imgUrl(product.images?.[0] ?? '')}
           alt={product.name}
           fill
-          className="object-cover"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 640px) 50vw, 220px"
         />
         {discount > 0 && (
-          <span className="absolute top-2 left-2 bg-[#00B43C] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
-            {discount}% off
+          <span className="absolute top-2 left-2 bg-[#FF8C42] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+            -{discount}%
           </span>
         )}
       </div>
 
+      {/* Info */}
       <div className="p-3 flex flex-col flex-1">
-        <p className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wide">{product.unit}</p>
-        <p className="text-sm font-medium leading-tight line-clamp-2 flex-1">{product.name}</p>
+        <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide mb-0.5">{product.unit}</p>
+        <p className="text-sm font-semibold leading-tight line-clamp-2 flex-1 text-[#2C2C2C]">{product.name}</p>
 
-        <div className="flex items-center justify-between mt-2.5">
-          <div>
-            <span className="font-bold text-sm">₹{(product.price / 100).toFixed(2)}</span>
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-bold text-base text-[#2C2C2C]">₹{(product.price / 100).toFixed(2)}</span>
             {discount > 0 && (
-              <span className="ml-1.5 text-xs text-gray-400 line-through">₹{(product.mrp / 100).toFixed(2)}</span>
+              <span className="text-xs text-gray-400 line-through">₹{(product.mrp / 100).toFixed(2)}</span>
             )}
           </div>
 
@@ -70,14 +72,14 @@ export default function ProductCard({ product }: { product: Product }) {
             <div className="flex items-center gap-1" onClick={(e) => e.preventDefault()}>
               <button
                 onClick={(e) => { e.preventDefault(); updateQty(product.id, cartItem.quantity - 1) }}
-                className="w-6 h-6 rounded border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition"
+                className="w-7 h-7 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition"
               >
                 <Minus size={11} />
               </button>
-              <span className="w-5 text-center text-xs font-semibold">{cartItem.quantity}</span>
+              <span className="w-5 text-center text-sm font-bold">{cartItem.quantity}</span>
               <button
                 onClick={(e) => { e.preventDefault(); updateQty(product.id, cartItem.quantity + 1) }}
-                className="w-6 h-6 rounded border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition"
+                className="w-7 h-7 rounded-full border-2 border-[#25a855] text-[#25a855] flex items-center justify-center hover:bg-green-50 transition"
               >
                 <Plus size={11} />
               </button>
@@ -85,10 +87,10 @@ export default function ProductCard({ product }: { product: Product }) {
           ) : (
             <button
               onClick={handleAdd}
-              className="w-7 h-7 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center hover:bg-[#2A2A2A] transition"
+              className="w-8 h-8 rounded-full bg-[#25a855] text-white flex items-center justify-center hover:bg-[#1a8a43] transition shadow-sm"
               aria-label="Add to cart"
             >
-              <Plus size={14} />
+              <Plus size={15} />
             </button>
           )}
         </div>

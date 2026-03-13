@@ -27,39 +27,39 @@ export default function SearchPage() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Search</h1>
-        <p className="text-sm text-gray-500 mt-1">Find products by name</p>
-      </div>
-
-      <div className="relative max-w-lg">
-        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-        <input
-          autoFocus
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search products..."
-          className="field-input pl-10 pr-10"
-        />
-        {q && (
-          <button onClick={() => setQ('')} className="absolute right-3 top-1/2 -translate-y-1/2 sq-icon-btn">
-            <X size={14} />
-          </button>
-        )}
+        <h1 className="text-3xl font-black text-[#2C2C2C] mb-6">Search</h1>
+        <div className="relative max-w-xl">
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            autoFocus
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search for groceries..."
+            className="tgtg-input pl-11 pr-10 py-4 text-base rounded-2xl"
+          />
+          {q && (
+            <button onClick={() => setQ('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <X size={16} />
+            </button>
+          )}
+        </div>
       </div>
 
       {isLoading ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => <div key={i} className="sq-card animate-pulse h-56" />)}
+          {Array.from({ length: 8 }).map((_, i) => <div key={i} className="tgtg-card animate-pulse h-64" />)}
         </div>
       ) : products.length === 0 ? (
-        <div className="sq-card p-16 text-center text-gray-500 text-sm">
-          No products found for &ldquo;{q}&rdquo;
+        <div className="tgtg-card p-16 text-center">
+          <p className="text-4xl mb-4">🔍</p>
+          <p className="font-bold text-[#2C2C2C]">No results for &ldquo;{q}&rdquo;</p>
+          <p className="text-gray-500 text-sm mt-1">Try a different search term</p>
         </div>
       ) : (
         <>
-          <p className="text-sm text-gray-500">{products.length} product{products.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm text-gray-500 font-medium">{products.length} product{products.length !== 1 ? 's' : ''}</p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {products.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
