@@ -1,25 +1,20 @@
-'use client'
-
-import './globals.css'
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Toaster } from 'sonner'
-import { useState } from 'react'
+import './globals.css'
+import Providers from '@/components/Providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: { queries: { staleTime: 60_000, retry: 1 } },
-  }))
+export const metadata: Metadata = {
+  title: 'OwnTown',
+  description: 'Shop local groceries & essentials',
+}
 
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${inter.className} bg-[#F7F7F7] text-[#1A1A1A]`}>
-        <QueryClientProvider client={queryClient}>
-          {children}
-          <Toaster position="top-center" richColors />
-        </QueryClientProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
