@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+body {
+  @apply bg-gray-50 text-[#1A1A1A] font-sans;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#00B43C] text-white font-semibold px-4 py-3 rounded-xl hover:bg-[#009932] transition disabled:opacity-50 active:scale-95;
+  }
+  .btn-outline {
+    @apply border-2 border-[#00B43C] text-[#00B43C] font-semibold px-4 py-3 rounded-xl hover:bg-green-50 transition;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100;
+  }
+  .qty-btn {
+    @apply w-8 h-8 flex items-center justify-center rounded-lg border-2 border-[#00B43C] text-[#00B43C] hover:bg-green-50 transition font-bold text-lg leading-none;
+  }
+}
