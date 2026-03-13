@@ -67,6 +67,42 @@ export const categoriesApi = {
     api.get<{ url: string; key: string }>('/admin/products/categories/upload-url', { params: { mime } }).then(r => r.data),
 }
 
+// ─── Procurement ──────────────────────────────────────────────────────────────
+
+import type { Supplier, PurchaseOrder, GoodsReceivedNote } from '@owntown/types'
+
+export const procurementApi = {
+  // Suppliers
+  listSuppliers: () =>
+    api.get<Supplier[]>('/admin/procurement/suppliers').then(r => r.data),
+  createSupplier: (data: Partial<Supplier>) =>
+    api.post<Supplier>('/admin/procurement/suppliers', data).then(r => r.data),
+  updateSupplier: (id: string, data: Partial<Supplier>) =>
+    api.put<Supplier>(`/admin/procurement/suppliers/${id}`, data).then(r => r.data),
+  removeSupplier: (id: string) =>
+    api.delete(`/admin/procurement/suppliers/${id}`).then(r => r.data),
+
+  // Purchase Orders
+  listPos: () =>
+    api.get<PurchaseOrder[]>('/admin/procurement/purchase-orders').then(r => r.data),
+  getPo: (id: string) =>
+    api.get<PurchaseOrder>(`/admin/procurement/purchase-orders/${id}`).then(r => r.data),
+  createPo: (data: { supplierId: string; expectedDate?: string; notes?: string; items: { productId: string; orderedQty: number; unitCost: number }[] }) =>
+    api.post<PurchaseOrder>('/admin/procurement/purchase-orders', data).then(r => r.data),
+  updatePoStatus: (id: string, status: string) =>
+    api.put<PurchaseOrder>(`/admin/procurement/purchase-orders/${id}/status`, { status }).then(r => r.data),
+  deletePo: (id: string) =>
+    api.delete(`/admin/procurement/purchase-orders/${id}`).then(r => r.data),
+
+  // GRNs
+  listGrns: (purchaseOrderId?: string) =>
+    api.get<GoodsReceivedNote[]>('/admin/procurement/grns', { params: { purchaseOrderId } }).then(r => r.data),
+  getGrn: (id: string) =>
+    api.get<GoodsReceivedNote>(`/admin/procurement/grns/${id}`).then(r => r.data),
+  createGrn: (data: { purchaseOrderId: string; invoiceNumber?: string; invoiceDate?: string; notes?: string; lines: { purchaseOrderItemId: string; receivedQty: number; unitCost: number }[] }) =>
+    api.post<GoodsReceivedNote>('/admin/procurement/grns', data).then(r => r.data),
+}
+
 // ─── S3 direct upload helper ──────────────────────────────────────────────────
 
 export async function uploadImageToS3(file: File, folder: 'products' | 'categories'): Promise<string> {

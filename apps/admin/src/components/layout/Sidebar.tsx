@@ -14,6 +14,7 @@ import {
   Image,
   Star,
   LogOut,
+  ClipboardList,
 } from 'lucide-react'
 import { useAdminStore } from '@/store/admin'
 import { cn } from '@/lib/utils'
@@ -28,6 +29,7 @@ const navItems = [
   { label: 'Coupons', href: '/coupons', icon: Ticket },
   { label: 'Banners', href: '/banners', icon: Image },
   { label: 'Reviews', href: '/reviews', icon: Star },
+  { label: 'Procurement', href: '/procurement', icon: ClipboardList },
   { label: 'Users', href: '/users', icon: Users },
 ]
 
