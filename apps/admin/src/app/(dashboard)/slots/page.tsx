@@ -45,7 +45,7 @@ function SlotFormModal({
               type="date"
               value={form.date}
               onChange={e => set('date', e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+              className="field-input"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -55,7 +55,7 @@ function SlotFormModal({
                 type="time"
                 value={form.startTime}
                 onChange={e => set('startTime', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               />
             </div>
             <div>
@@ -64,7 +64,7 @@ function SlotFormModal({
                 type="time"
                 value={form.endTime}
                 onChange={e => set('endTime', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               />
             </div>
           </div>
@@ -75,7 +75,7 @@ function SlotFormModal({
               placeholder="e.g. Morning (9AM–12PM)"
               value={form.label}
               onChange={e => set('label', e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+              className="field-input"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ function SlotFormModal({
               min={1}
               value={form.maxOrders}
               onChange={e => set('maxOrders', Number(e.target.value))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+              className="field-input"
             />
           </div>
         </div>
@@ -100,7 +100,7 @@ function SlotFormModal({
           <button
             onClick={() => onSave(form)}
             disabled={saving || !form.date || !form.startTime || !form.endTime || !form.label}
-            className="flex-1 bg-[#1A1A1A] text-white rounded-lg py-2.5 text-sm font-medium hover:bg-black/80 transition disabled:opacity-50"
+            className="flex-1 bg-[#1A1A1A] text-white rounded-lg py-2.5 text-sm font-medium hover:bg-[#2A2A2A] transition disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
@@ -167,7 +167,7 @@ export default function SlotsPage() {
         </div>
         <button
           onClick={() => setModalSlot(EMPTY_FORM)}
-          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-black/80 transition"
+          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#2A2A2A] transition"
         >
           <Plus size={16} />
           New Slot
@@ -180,7 +180,7 @@ export default function SlotsPage() {
           type="date"
           value={filterDate}
           onChange={e => setFilterDate(e.target.value)}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A] bg-white"
+          className="field-input w-auto"
         />
         {filterDate && (
           <button

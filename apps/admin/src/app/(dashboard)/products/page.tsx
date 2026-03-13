@@ -58,12 +58,12 @@ export default function ProductsPage() {
               placeholder="Search products..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A] bg-white w-52"
+              className="field-input pl-9 w-52 py-2"
             />
           </div>
           <button
             onClick={openCreate}
-            className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-black/80 transition"
+            className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2A2A2A] transition"
           >
             <Plus size={16} />
             Add Product

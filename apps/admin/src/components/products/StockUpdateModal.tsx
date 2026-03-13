@@ -26,12 +26,12 @@ export function StockUpdateModal({ product, onClose, onSuccess }: Props) {
   })
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-5">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 space-y-5">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-gray-900">Update Stock</h2>
-          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-lg transition">
-            <X size={16} />
+          <h2 className="font-bold text-[#1A1A1A]">Update Stock</h2>
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-md transition">
+            <X size={16} className="text-gray-500" />
           </button>
         </div>
         <p className="text-sm text-gray-500">{product.name} — {product.unit}</p>
@@ -54,16 +54,16 @@ export function StockUpdateModal({ product, onClose, onSuccess }: Props) {
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 border border-gray-200 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50 transition"
+            className="flex-1 border border-gray-300 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
           >
             Cancel
           </button>
           <button
             onClick={() => mutation.mutate()}
             disabled={mutation.isPending}
-            className="flex-1 bg-violet-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-violet-700 disabled:opacity-60 transition"
+            className="flex-1 bg-[#1A1A1A] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2A2A2A] disabled:opacity-50 transition"
           >
-            {mutation.isPending ? 'Saving...' : 'Update'}
+            {mutation.isPending ? 'Saving…' : 'Update'}
           </button>
         </div>
       </div>

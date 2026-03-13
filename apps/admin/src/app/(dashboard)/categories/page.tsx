@@ -45,7 +45,7 @@ export default function CategoriesPage() {
         </div>
         <button
           onClick={() => { setEditCategory(null); setShowForm(true) }}
-          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-black/80 transition"
+          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2A2A2A] transition"
         >
           <Plus size={16} />
           Add Category

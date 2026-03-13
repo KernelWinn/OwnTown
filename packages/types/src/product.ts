@@ -11,6 +11,22 @@ export interface Category {
   updatedAt: string
 }
 
+export interface ProductVariant {
+  id: string
+  productId: string
+  title: string                       // e.g. "500g / Mango"
+  options: Record<string, string>     // e.g. { "Size": "500g", "Flavor": "Mango" }
+  price: number                       // paise
+  mrp: number                         // paise
+  sku: string
+  barcode?: string
+  stockQuantity: number
+  lowStockThreshold: number
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Product {
   id: string
   name: string
@@ -31,6 +47,8 @@ export interface Product {
   isActive: boolean
   isFeatured: boolean
   tags: string[]
+  optionNames: string[]   // e.g. ["Size", "Flavor"]
+  variants?: ProductVariant[]
   createdAt: string
   updatedAt: string
 }

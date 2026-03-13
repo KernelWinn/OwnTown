@@ -52,7 +52,7 @@ function CouponFormModal({
               value={form.code ?? ''}
               onChange={e => set('code', e.target.value.toUpperCase())}
               placeholder="SAVE20"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+              className="field-input font-mono"
             />
           </div>
           <div>
@@ -61,7 +61,7 @@ function CouponFormModal({
               value={form.description ?? ''}
               onChange={e => set('description', e.target.value)}
               placeholder="Get 20% off on your order"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+              className="field-input"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -70,7 +70,7 @@ function CouponFormModal({
               <select
                 value={form.discountType ?? 'percentage'}
                 onChange={e => set('discountType', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               >
                 <option value="percentage">Percentage (%)</option>
                 <option value="flat">Flat (₹)</option>
@@ -85,7 +85,7 @@ function CouponFormModal({
                 min={1}
                 value={form.discountValue ?? ''}
                 onChange={e => set('discountValue', Number(e.target.value))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               />
             </div>
           </div>
@@ -97,7 +97,7 @@ function CouponFormModal({
                 min={0}
                 value={(form.minOrderAmount ?? 0) / 100}
                 onChange={e => set('minOrderAmount', Number(e.target.value) * 100)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               />
             </div>
             <div>
@@ -108,7 +108,7 @@ function CouponFormModal({
                 placeholder="No cap"
                 value={form.maxDiscount != null ? form.maxDiscount / 100 : ''}
                 onChange={e => set('maxDiscount', e.target.value ? Number(e.target.value) * 100 : null)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               />
             </div>
           </div>
@@ -121,7 +121,7 @@ function CouponFormModal({
                 placeholder="Unlimited"
                 value={form.usageLimit ?? ''}
                 onChange={e => set('usageLimit', e.target.value ? Number(e.target.value) : null)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               />
             </div>
             <div>
@@ -130,7 +130,7 @@ function CouponFormModal({
                 type="date"
                 value={form.expiresAt ?? ''}
                 onChange={e => set('expiresAt', e.target.value || null)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]"
+                className="field-input"
               />
             </div>
           </div>
@@ -141,7 +141,7 @@ function CouponFormModal({
           <button
             onClick={() => onSave(form)}
             disabled={saving || !form.code || !form.discountValue}
-            className="flex-1 bg-[#1A1A1A] text-white rounded-lg py-2.5 text-sm font-medium hover:bg-black/80 transition disabled:opacity-50"
+            className="flex-1 bg-[#1A1A1A] text-white rounded-lg py-2.5 text-sm font-medium hover:bg-[#2A2A2A] transition disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
@@ -202,7 +202,7 @@ export default function CouponsPage() {
         </div>
         <button
           onClick={() => setModal({ ...EMPTY })}
-          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-black/80 transition"
+          className="flex items-center gap-2 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#2A2A2A] transition"
         >
           <Plus size={16} />
           New Coupon

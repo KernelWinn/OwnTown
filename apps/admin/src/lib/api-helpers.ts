@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { Product, Category } from '@owntown/types'
+import type { Product, Category, ProductVariant } from '@owntown/types'
 
 // ─── Products ────────────────────────────────────────────────────────────────
 
@@ -33,6 +33,19 @@ export const productsApi = {
 
   lowStock: () =>
     api.get<Product[]>('/admin/products/low-stock').then(r => r.data),
+
+  // Variants
+  listVariants: (productId: string) =>
+    api.get<ProductVariant[]>(`/admin/products/${productId}/variants`).then(r => r.data),
+
+  createVariant: (productId: string, data: Omit<ProductVariant, 'id' | 'productId' | 'createdAt' | 'updatedAt'>) =>
+    api.post<ProductVariant>(`/admin/products/${productId}/variants`, data).then(r => r.data),
+
+  updateVariant: (productId: string, variantId: string, data: Partial<ProductVariant>) =>
+    api.patch<ProductVariant>(`/admin/products/${productId}/variants/${variantId}`, data).then(r => r.data),
+
+  deleteVariant: (productId: string, variantId: string) =>
+    api.delete(`/admin/products/${productId}/variants/${variantId}`).then(r => r.data),
 }
 
 // ─── Categories ───────────────────────────────────────────────────────────────

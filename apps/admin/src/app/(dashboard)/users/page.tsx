@@ -54,7 +54,7 @@ export default function UsersPage() {
           placeholder="Search by name, phone or email..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A] bg-white"
+          className="field-input pl-9"
         />
       </div>
 

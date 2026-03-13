@@ -25,6 +25,7 @@ export const products = pgTable('products', {
   isActive: boolean('is_active').notNull().default(true),
   isFeatured: boolean('is_featured').notNull().default(false),
   tags: text('tags').array().notNull().default([]),
+  optionNames: text('option_names').array().notNull().default([]),  // e.g. ["Size", "Flavor"]
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 })

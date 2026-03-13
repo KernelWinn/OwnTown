@@ -58,19 +58,6 @@ export default function LoginPage() {
             Orders, inventory, customers, and revenue — all in one place.
           </p>
 
-          <div className="mt-12 grid grid-cols-2 gap-4">
-            {[
-              { label: 'Orders', value: '1,200+' },
-              { label: 'Products', value: '500+' },
-              { label: 'Customers', value: '3,400+' },
-              { label: 'Uptime', value: '99.9%' },
-            ].map(({ label, value }) => (
-              <div key={label} className="border border-white/10 rounded-lg p-4">
-                <p className="text-white text-xl font-bold">{value}</p>
-                <p className="text-white/40 text-xs mt-0.5">{label}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
         <p className="text-white/20 text-xs">© {new Date().getFullYear()} OwnTown. All rights reserved.</p>
@@ -100,7 +87,7 @@ export default function LoginPage() {
                 type="email"
                 autoComplete="email"
                 className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm text-[#1A1A1A] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:border-transparent transition"
-                placeholder="admin@owntown.in"
+                placeholder="admin@owntown.com"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs mt-1.5">{errors.email.message}</p>

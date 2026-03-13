@@ -136,7 +136,7 @@ export default function OrdersPage() {
                         <button
                           onClick={() => statusMutation.mutate({ id: order.id, status: NEXT_STATUS[order.status] })}
                           disabled={statusMutation.isPending}
-                          className="text-xs px-3 py-1.5 bg-[#1A1A1A] text-white rounded-md hover:bg-black/80 font-medium transition disabled:opacity-50"
+                          className="text-xs px-3 py-1.5 bg-[#1A1A1A] text-white rounded-md hover:bg-[#2A2A2A] font-medium transition disabled:opacity-50"
                         >
                           Mark {NEXT_STATUS[order.status]}
                         </button>

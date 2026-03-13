@@ -21,7 +21,7 @@ type FormValues = z.infer<typeof schema>
 
 interface Props {
   category: Category | null
-  categories: Category[]       // top-level only (for parent selector)
+  categories: Category[]
   onClose: () => void
   onSuccess: () => void
 }
@@ -70,56 +70,52 @@ export function CategoryFormModal({ category, categories, onClose, onSuccess }: 
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <h2 className="text-base font-bold text-[#1A1A1A]">
             {isEdit ? 'Edit Category' : 'New Category'}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition">
-            <X size={18} />
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-md transition">
+            <X size={18} className="text-gray-500" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit(d => mutation.mutate(d))} className="p-6 space-y-4">
-          {/* Image */}
           <div>
-            <label className="field-label">Category Image</label>
+            <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Category Image</label>
             <div className="flex items-center gap-3">
               {imageUrl ? (
-                <img src={imageUrl} alt="" className="w-16 h-16 rounded-xl object-cover bg-gray-100" />
+                <img src={imageUrl} alt="" className="w-14 h-14 rounded-lg object-cover bg-gray-100" />
               ) : (
-                <div className="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
-                  No image
+                <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center text-xs text-gray-400">
+                  No img
                 </div>
               )}
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="flex items-center gap-2 border border-gray-200 px-3 py-2 rounded-xl text-sm hover:bg-gray-50 transition"
+                className="flex items-center gap-2 border border-gray-300 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition text-gray-700"
               >
                 {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-                {uploading ? 'Uploading...' : 'Upload'}
+                {uploading ? 'Uploading…' : 'Upload'}
               </button>
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
             </div>
           </div>
 
-          {/* Name */}
           <div>
             <label className="field-label">Name *</label>
             <input {...register('name')} className="field-input" placeholder="e.g. Fruits & Vegetables" />
             {errors.name && <p className="field-error">{errors.name.message}</p>}
           </div>
 
-          {/* Description */}
           <div>
             <label className="field-label">Description</label>
             <textarea {...register('description')} rows={2} className="field-input resize-none" />
           </div>
 
-          {/* Parent category */}
           <div>
             <label className="field-label">Parent Category (optional)</label>
             <select {...register('parentId')} className="field-input">
@@ -132,7 +128,6 @@ export function CategoryFormModal({ category, categories, onClose, onSuccess }: 
             </select>
           </div>
 
-          {/* Sort order */}
           <div>
             <label className="field-label">Sort Order</label>
             <input {...register('sortOrder')} type="number" min={0} className="field-input" />
@@ -142,16 +137,16 @@ export function CategoryFormModal({ category, categories, onClose, onSuccess }: 
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-gray-200 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50 transition"
+              className="flex-1 border border-gray-300 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="flex-1 bg-violet-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-violet-700 disabled:opacity-60 transition"
+              className="flex-1 bg-[#1A1A1A] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2A2A2A] disabled:opacity-50 transition"
             >
-              {mutation.isPending ? 'Saving...' : isEdit ? 'Save Changes' : 'Create'}
+              {mutation.isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Create'}
             </button>
           </div>
         </form>

@@ -10,6 +10,7 @@ import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateStockDto } from './dto/update-stock.dto'
+import { CreateVariantDto } from './products.service'
 
 // ─── Customer routes (/products) ─────────────────────────────────────────────
 
@@ -97,6 +98,40 @@ export class AdminProductsController {
   @Patch(':id/stock')
   updateStock(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateStockDto) {
     return this.productsService.updateStock(id, dto.stockQuantity)
+  }
+
+  // ─── Variant routes ───────────────────────────────────────────────────
+
+  // GET /admin/products/:id/variants
+  @Get(':id/variants')
+  listVariants(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productsService.listVariants(id)
+  }
+
+  // POST /admin/products/:id/variants
+  @Post(':id/variants')
+  createVariant(@Param('id', ParseUUIDPipe) id: string, @Body() dto: CreateVariantDto) {
+    return this.productsService.createVariant(id, dto)
+  }
+
+  // PATCH /admin/products/:id/variants/:variantId
+  @Patch(':id/variants/:variantId')
+  updateVariant(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('variantId', ParseUUIDPipe) variantId: string,
+    @Body() dto: Partial<CreateVariantDto>,
+  ) {
+    return this.productsService.updateVariant(id, variantId, dto)
+  }
+
+  // DELETE /admin/products/:id/variants/:variantId
+  @Delete(':id/variants/:variantId')
+  @HttpCode(HttpStatus.OK)
+  deleteVariant(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('variantId', ParseUUIDPipe) variantId: string,
+  ) {
+    return this.productsService.deleteVariant(id, variantId)
   }
 
   // ─── Image upload (S3 presigned URL flow) ─────────────────────────────
