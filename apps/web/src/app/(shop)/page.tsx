@@ -62,8 +62,12 @@ export default function HomePage() {
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
               {categories.map((cat) => (
                 <Link key={cat.id} href={`/search?category=${cat.id}`} className="flex flex-col items-center gap-2 group">
-                  <div className="w-full aspect-square tgtg-card group-hover:shadow-elevated transition-shadow">
-                    {cat.imageUrl ? (
+                  <div className="w-full aspect-square tgtg-card group-hover:shadow-elevated transition-shadow overflow-hidden">
+                    {cat.icon ? (
+                      <div className="w-full h-full bg-[#e6f5f5] flex items-center justify-center text-3xl select-none group-hover:scale-110 transition-transform duration-200">
+                        {cat.icon}
+                      </div>
+                    ) : cat.imageUrl ? (
                       <div className="relative w-full h-full">
                         <Image
                           src={imgUrl(cat.imageUrl)}

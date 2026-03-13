@@ -21,4 +21,8 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsString()
   imageUrl?: string
+
+  @IsOptional()
+  @IsString()
+  icon?: string
 }

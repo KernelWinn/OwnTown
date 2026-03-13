@@ -10,6 +10,15 @@ import { toast } from 'sonner'
 import { categoriesApi, uploadImageToS3 } from '@/lib/api-helpers'
 import type { Category } from '@owntown/types'
 
+const EMOJI_PRESETS = [
+  '🥦','🥕','🍅','🥒','🧅','🌽','🥬','🥑','🍋','🍎',
+  '🍇','🍓','🫐','🍌','🍉','🥭','🍑','🍒','🥝','🍐',
+  '🥚','🧀','🥛','🧈','🥩','🍗','🐟','🦐','🌾','🫘',
+  '🥜','🌰','🫒','🧄','🌶️','🫚','🫙','🍯','🧂','🍵',
+  '☕','🧃','🥤','🧋','🍫','🍬','🧁','🍞','🥐','🥫',
+  '🏠','🌿','🌱','✨','⭐','🛒','🎁','💊','🧼','🪥',
+]
+
 const schema = z.object({
   name: z.string().min(1, 'Required'),
   description: z.string().optional(),
@@ -30,7 +39,9 @@ export function CategoryFormModal({ category, categories, onClose, onSuccess }: 
   const isEdit = !!category
   const fileRef = useRef<HTMLInputElement>(null)
   const [imageUrl, setImageUrl] = useState<string>(category?.imageUrl ?? '')
+  const [icon, setIcon] = useState<string>(category?.icon ?? '')
   const [uploading, setUploading] = useState(false)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -41,7 +52,12 @@ export function CategoryFormModal({ category, categories, onClose, onSuccess }: 
 
   const mutation = useMutation({
     mutationFn: (data: FormValues) => {
-      const payload = { ...data, imageUrl: imageUrl || undefined, parentId: data.parentId || undefined }
+      const payload = {
+        ...data,
+        imageUrl: imageUrl || undefined,
+        icon: icon || undefined,
+        parentId: data.parentId || undefined,
+      }
       return isEdit
         ? categoriesApi.update(category!.id, payload)
         : categoriesApi.create(payload)
@@ -82,6 +98,65 @@ export function CategoryFormModal({ category, categories, onClose, onSuccess }: 
         </div>
 
         <form onSubmit={handleSubmit(d => mutation.mutate(d))} className="p-6 space-y-4">
+          {/* Emoji icon picker */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
+              Category Icon (emoji)
+            </label>
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-xl border-2 border-gray-200 flex items-center justify-center text-3xl bg-gray-50 select-none">
+                {icon || <span className="text-xs text-gray-300">none</span>}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker(p => !p)}
+                  className="text-xs px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition"
+                >
+                  {showEmojiPicker ? 'Close picker' : 'Pick emoji'}
+                </button>
+                {icon && (
+                  <button
+                    type="button"
+                    onClick={() => setIcon('')}
+                    className="text-xs px-3 py-1.5 text-red-500 hover:bg-red-50 rounded-lg font-medium transition"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {showEmojiPicker && (
+              <div className="mt-2 p-3 border border-gray-200 rounded-xl bg-white shadow-sm">
+                <div className="grid grid-cols-10 gap-1 mb-2">
+                  {EMOJI_PRESETS.map(e => (
+                    <button
+                      key={e}
+                      type="button"
+                      onClick={() => { setIcon(e); setShowEmojiPicker(false) }}
+                      className={`text-xl p-1 rounded-lg hover:bg-gray-100 transition ${icon === e ? 'bg-[#E6F9ED] ring-1 ring-[#00B43C]' : ''}`}
+                    >
+                      {e}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 border-t border-gray-100 pt-2">
+                  <span className="text-xs text-gray-400">Or type one:</span>
+                  <input
+                    type="text"
+                    value={icon}
+                    onChange={e => setIcon(e.target.value)}
+                    className="field-input py-1 text-lg w-20 text-center"
+                    placeholder="🥦"
+                    maxLength={4}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Image upload */}
           <div>
             <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">Category Image</label>
             <div className="flex items-center gap-3">

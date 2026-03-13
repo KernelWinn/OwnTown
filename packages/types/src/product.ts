@@ -4,6 +4,7 @@ export interface Category {
   slug: string
   description?: string
   imageUrl?: string
+  icon?: string           // Emoji icon e.g. "🥦"
   parentId?: string       // For subcategories
   sortOrder: number
   isActive: boolean

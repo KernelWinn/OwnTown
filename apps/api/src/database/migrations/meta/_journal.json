@@ -15,6 +15,13 @@
       "when": 1773427035116,
       "tag": "0001_pink_dust",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773430004319,
+      "tag": "0002_add_category_icon",
+      "breakpoints": true
     }
   ]
 }

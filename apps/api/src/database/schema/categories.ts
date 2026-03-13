@@ -6,6 +6,7 @@ export const categories = pgTable('categories', {
   slug: varchar('slug', { length: 100 }).notNull().unique(),
   description: text('description'),
   imageUrl: varchar('image_url', { length: 500 }),
+  icon: varchar('icon', { length: 10 }),   // emoji icon e.g. "🥦"
   parentId: uuid('parent_id'),   // self-reference for subcategories
   sortOrder: integer('sort_order').notNull().default(0),
   isActive: boolean('is_active').notNull().default(true),
