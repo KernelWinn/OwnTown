@@ -23,7 +23,7 @@ export default function ProductPage() {
   const [activeImg, setActiveImg] = useState(0)
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
 
-  const { data: product, isLoading } = useQuery<Product>({
+  const { data: product, isLoading, isError } = useQuery<Product>({
     queryKey: ['product', id],
     queryFn: () => api.get(`/products/${id}`).then((r) => r.data),
   })
@@ -37,7 +37,7 @@ export default function ProductPage() {
   const addItem = useCartStore((s) => s.addItem)
   const updateQty = useCartStore((s) => s.updateQty)
 
-  if (isLoading || !product) {
+  if (isLoading) {
     return (
       <div className="max-w-6xl mx-auto px-6 py-10 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-24 mb-8" />
@@ -48,6 +48,17 @@ export default function ProductPage() {
             <div className="h-6 bg-gray-200 rounded w-1/3" />
           </div>
         </div>
+      </div>
+    )
+  }
+
+  if (isError || !product) {
+    return (
+      <div className="max-w-6xl mx-auto px-6 py-20 text-center">
+        <p className="text-4xl mb-4">😕</p>
+        <h2 className="text-xl font-black text-[#2C2C2C] mb-2">Product not found</h2>
+        <p className="text-gray-500 mb-6">This product may have been removed or the link is invalid.</p>
+        <button onClick={() => router.back()} className="tgtg-btn">Go back</button>
       </div>
     )
   }
@@ -177,7 +188,11 @@ export default function ProductPage() {
 
           {/* Add to cart */}
           <div className="pt-2">
-            {cartItem ? (
+            {product.stockQuantity === 0 ? (
+              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 text-gray-400 font-semibold text-sm">
+                Out of stock
+              </div>
+            ) : cartItem ? (
               <div className="flex items-center gap-4">
                 <button onClick={() => updateQty(product.id, cartItem.quantity - 1, selectedVariant?.id)}
                   className="w-11 h-11 rounded-full border-2 border-[#007a78] text-[#007a78] flex items-center justify-center hover:bg-[#e6f5f5] transition">
@@ -198,7 +213,6 @@ export default function ProductPage() {
             )}
           </div>
 
-          {/* Trust badges */}
           <div className="flex flex-wrap gap-3 pt-2">
             {['Same-day delivery', 'Fresh guaranteed', 'Easy returns'].map((badge) => (
               <span key={badge} className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full">

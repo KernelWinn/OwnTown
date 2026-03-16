@@ -3,7 +3,7 @@ import { InjectQueue } from '@nestjs/bullmq'
 import { Queue } from 'bullmq'
 import { eq, and, gte, desc } from 'drizzle-orm'
 import { DB } from '../database/database.module'
-import { orders, orderItems, addresses, deliverySlots } from '../database/schema'
+import { orders, orderItems, addresses, deliverySlots, products } from '../database/schema'
 import { generateOrderNumber } from '@owntown/utils'
 import { CartService } from '../cart/cart.service'
 import { ProductsService } from '../products/products.service'
@@ -137,7 +137,21 @@ export class OrdersService {
       })
       .returning()
 
-    // 6. Insert order items (price snapshot)
+    // 6. Fetch current cost prices for margin tracking
+    const productIds = [...new Set(cartItems.map(i => i.productId))]
+    const productRows = await Promise.all(
+      productIds.map(id =>
+        this.db.select({ id: products.id, costPrice: products.costPrice })
+          .from(products)
+          .where(eq(products.id, id))
+          .then((rows: any[]) => rows[0]),
+      ),
+    )
+    const costMap: Record<string, number> = Object.fromEntries(
+      productRows.filter(Boolean).map((p: any) => [p.id, p.costPrice ?? 0]),
+    )
+
+    // 7. Insert order items (price + cost snapshot)
     await this.db.insert(orderItems).values(
       cartItems.map(item => ({
         orderId: order.id,
@@ -147,6 +161,7 @@ export class OrdersService {
         imageUrl: item.imageUrl,
         price: item.price,
         mrp: item.mrp,
+        costPrice: costMap[item.productId] ?? 0,
         quantity: item.quantity,
         totalPrice: item.totalPrice,
         gstRate: 0,
@@ -154,7 +169,7 @@ export class OrdersService {
       })),
     )
 
-    // 7. Decrement stock for each item
+    // 8. Decrement stock for each item
     await Promise.all(
       cartItems.map(item =>
         this.productsService.decrementStock(item.productId, item.quantity),

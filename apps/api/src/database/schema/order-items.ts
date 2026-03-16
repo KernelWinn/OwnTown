@@ -9,8 +9,9 @@ export const orderItems = pgTable('order_items', {
   name: varchar('name', { length: 255 }).notNull(),     // snapshot at order time
   unit: varchar('unit', { length: 50 }).notNull(),
   imageUrl: varchar('image_url', { length: 500 }),
-  price: integer('price').notNull(),                     // paise at order time
+  price: integer('price').notNull(),                     // selling price in paise at order time
   mrp: integer('mrp').notNull(),
+  costPrice: integer('cost_price').notNull().default(0), // purchase cost in paise at order time (for margin)
   quantity: integer('quantity').notNull(),
   totalPrice: integer('total_price').notNull(),
   gstRate: integer('gst_rate').notNull().default(0),

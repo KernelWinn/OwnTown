@@ -6,7 +6,6 @@ import {
 import { ProductsService } from './products.service'
 import { StorageService } from '../storage/storage.service'
 import { AdminJwtGuard } from '../admin/admin-jwt.guard'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { CreateCategoryDto } from './dto/create-category.dto'
@@ -50,7 +49,6 @@ export class ProductsController {
   }
 
   @Post('search-event')
-  @UseGuards(JwtAuthGuard)
   recordEvent(@Body() dto: SearchEventDto, @Request() req: any) {
     return this.productsService.recordSearchEvent(
       dto.productId,

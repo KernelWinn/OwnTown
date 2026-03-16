@@ -28,7 +28,6 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-const EMPTY_VARIANT = { title: '', options: {} as Record<string, string>, price: 0, mrp: 0, sku: '', barcode: '', stockQuantity: 0 }
 
 interface Props {
   product: Product | null
@@ -52,14 +51,18 @@ function VariantRow({
   const qc = useQueryClient()
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState({
-    price: variant.price,
-    mrp: variant.mrp,
+    price: variant.price / 100,
+    mrp: variant.mrp / 100,
     sku: variant.sku,
     stockQuantity: variant.stockQuantity,
   })
 
   const updateMutation = useMutation({
-    mutationFn: () => productsApi.updateVariant(productId, variant.id, form),
+    mutationFn: () => productsApi.updateVariant(productId, variant.id, {
+      ...form,
+      price: Math.round(form.price * 100),
+      mrp: Math.round(form.mrp * 100),
+    }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['variants', productId] })
       setEditing(false)
@@ -94,10 +97,12 @@ function VariantRow({
           {['price', 'mrp', 'sku', 'stockQuantity'].map(k => (
             <div key={k}>
               <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-                {k === 'stockQuantity' ? 'Stock' : k.toUpperCase()}
+                {k === 'stockQuantity' ? 'Stock' : k === 'price' ? 'Price (₹)' : k === 'mrp' ? 'MRP (₹)' : 'SKU'}
               </label>
               <input
                 type={k === 'sku' ? 'text' : 'number'}
+                step={k === 'price' || k === 'mrp' ? '0.01' : undefined}
+                min={k === 'price' || k === 'mrp' ? '0.01' : k === 'stockQuantity' ? '0' : undefined}
                 value={(form as any)[k]}
                 onChange={e => setForm(f => ({ ...f, [k]: k === 'sku' ? e.target.value : Number(e.target.value) }))}
                 className="field-input py-1.5 text-xs"
@@ -170,8 +175,8 @@ function AddVariantForm({
     mutationFn: () => productsApi.createVariant(productId, {
       title: autoTitle || 'Variant',
       options,
-      price: Number(form.price),
-      mrp: Number(form.mrp),
+      price: Math.round(Number(form.price) * 100),
+      mrp: Math.round(Number(form.mrp) * 100),
       sku: form.sku,
       stockQuantity: Number(form.stockQuantity),
       isActive: true,

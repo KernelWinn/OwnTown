@@ -275,6 +275,7 @@ export class ProcurementService {
           .update(products)
           .set({
             stockQuantity: sql`stock_quantity + ${line.receivedQty}`,
+            costPrice: line.unitCost,   // update latest purchase cost for margin tracking
             updatedAt: new Date(),
           })
           .where(eq(products.id, poItem.productId))

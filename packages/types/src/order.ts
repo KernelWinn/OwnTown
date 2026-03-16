@@ -25,12 +25,14 @@ export interface DeliverySlot {
 }
 
 export interface OrderItem {
+  id?: string
   productId: string
   name: string
   unit: string
   imageUrl: string
-  price: number           // price at time of order (paise)
+  price: number           // selling price at time of order (paise)
   mrp: number
+  costPrice: number       // purchase cost at time of order (paise) — for gross margin
   quantity: number
   totalPrice: number
   gstRate: number

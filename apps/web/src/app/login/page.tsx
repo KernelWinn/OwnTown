@@ -146,7 +146,7 @@ export default function LoginPage() {
                 </div>
                 <button
                   type="submit"
-                  disabled={loading || otp.length < 4}
+                  disabled={loading || otp.length < 6}
                   className="tgtg-btn w-full py-4 text-base mt-2 disabled:opacity-60"
                 >
                   {loading ? 'Verifying…' : 'Verify & Sign in'}

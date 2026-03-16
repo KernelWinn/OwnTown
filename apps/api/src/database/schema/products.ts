@@ -24,6 +24,7 @@ export const products = pgTable('products', {
   gstRate: integer('gst_rate').notNull().default(0),        // 0, 5, 12, 18
   isActive: boolean('is_active').notNull().default(true),
   isFeatured: boolean('is_featured').notNull().default(false),
+  costPrice: integer('cost_price').notNull().default(0),            // latest purchase cost in paise (updated by GRN)
   tags: text('tags').array().notNull().default([]),
   optionNames: text('option_names').array().notNull().default([]),  // e.g. ["Size", "Flavor"]
   createdAt: timestamp('created_at').notNull().defaultNow(),

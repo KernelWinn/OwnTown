@@ -103,6 +103,21 @@ export const procurementApi = {
     api.post<GoodsReceivedNote>('/admin/procurement/grns', data).then(r => r.data),
 }
 
+// ─── Orders ───────────────────────────────────────────────────────────────────
+
+import type { Order } from '@owntown/types'
+
+export const ordersApi = {
+  list: (limit = 50) =>
+    api.get<Order[]>('/admin/orders', { params: { limit } }).then(r => r.data),
+
+  get: (id: string) =>
+    api.get<Order>(`/admin/orders/${id}`).then(r => r.data),
+
+  updateStatus: (id: string, status: string) =>
+    api.put(`/admin/orders/${id}/status`, { status }).then(r => r.data),
+}
+
 // ─── S3 direct upload helper ──────────────────────────────────────────────────
 
 export async function uploadImageToS3(file: File, folder: 'products' | 'categories'): Promise<string> {

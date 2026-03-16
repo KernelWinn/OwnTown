@@ -74,7 +74,9 @@ export default function ProductCard({ product }: { product: Product }) {
             )}
           </div>
 
-          {cartItem ? (
+          {product.stockQuantity === 0 ? (
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Out of stock</span>
+          ) : cartItem ? (
             <div className="flex items-center gap-1" onClick={(e) => e.preventDefault()}>
               <button
                 onClick={(e) => { e.preventDefault(); updateQty(product.id, cartItem.quantity - 1) }}

@@ -26,6 +26,10 @@ export default function CheckoutPage() {
       toast.error('Please fill in your delivery address')
       return
     }
+    if (!/^\d{6}$/.test(address.pincode)) {
+      toast.error('Enter a valid 6-digit pincode')
+      return
+    }
     setPlacing(true)
     try {
       const { data } = await api.post('/orders', {
