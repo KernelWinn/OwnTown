@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ChevronLeft, Package } from 'lucide-react'
+import { ChevronLeft, Package, Truck, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { ordersApi } from '@/lib/api-helpers'
 import { formatPrice } from '@owntown/utils'
@@ -62,6 +62,16 @@ export default function OrderDetailPage() {
     onError: () => toast.error('Failed to update status'),
   })
 
+  const fulfillMutation = useMutation({
+    mutationFn: () => ordersApi.createShipment(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-order', id] })
+      qc.invalidateQueries({ queryKey: ['admin-orders'] })
+      toast.success('Shipment created')
+    },
+    onError: () => toast.error('Failed to create shipment'),
+  })
+
   if (isLoading || !order) {
     return <div className="text-center py-20 text-gray-400">{isLoading ? 'Loading…' : 'Order not found'}</div>
   }
@@ -99,6 +109,26 @@ export default function OrderDetailPage() {
               <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
             ))}
           </select>
+          {!order.awbNumber ? (
+            <button
+              onClick={() => fulfillMutation.mutate()}
+              disabled={fulfillMutation.isPending || order.status === 'cancelled'}
+              className="flex items-center gap-2 px-4 py-2 bg-[#1A1A1A] text-white text-sm font-semibold rounded-lg hover:bg-[#2A2A2A] disabled:opacity-40 transition"
+            >
+              <Truck size={14} />
+              {fulfillMutation.isPending ? 'Creating…' : 'Fulfill'}
+            </button>
+          ) : (
+            <a
+              href={order.trackingUrl ?? '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 bg-[#E6F9ED] text-[#00843C] text-sm font-semibold rounded-lg hover:bg-[#d0f0df] transition"
+            >
+              <ExternalLink size={14} />
+              Track · {order.awbNumber}
+            </a>
+          )}
         </div>
       </div>
 

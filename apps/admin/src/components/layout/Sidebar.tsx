@@ -29,7 +29,7 @@ const navItems = [
   { label: 'Coupons', href: '/coupons', icon: Ticket },
   { label: 'Banners', href: '/banners', icon: Image },
   { label: 'Reviews', href: '/reviews', icon: Star },
-  { label: 'Procurement', href: '/procurement', icon: ClipboardList },
+  { label: 'Supplier', href: '/procurement', icon: ClipboardList },
   { label: 'Users', href: '/users', icon: Users },
 ]
 

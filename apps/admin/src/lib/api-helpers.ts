@@ -116,6 +116,12 @@ export const ordersApi = {
 
   updateStatus: (id: string, status: string) =>
     api.put(`/admin/orders/${id}/status`, { status }).then(r => r.data),
+
+  createShipment: (id: string) =>
+    api.post(`/admin/orders/${id}/ship`).then(r => r.data),
+
+  getLabel: (id: string) =>
+    api.get<{ labelUrl: string }>(`/admin/orders/${id}/label`).then(r => r.data),
 }
 
 // ─── S3 direct upload helper ──────────────────────────────────────────────────

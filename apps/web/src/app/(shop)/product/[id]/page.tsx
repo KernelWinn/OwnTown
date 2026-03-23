@@ -10,6 +10,59 @@ import Image from 'next/image'
 import { ChevronLeft, Minus, Plus, ShoppingCart, Star } from 'lucide-react'
 import { toast } from 'sonner'
 
+function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1,2,3,4,5].map(i => (
+        <Star key={i} size={size} className={i <= rating ? 'text-amber-400' : 'text-gray-200'} fill={i <= rating ? '#fbbf24' : '#e5e7eb'} />
+      ))}
+    </div>
+  )
+}
+
+interface Review { id: string; rating: number; comment?: string; createdAt: string }
+interface ReviewsData { reviews: Review[]; averageRating: number | null; totalReviews: number }
+
+function ReviewsSection({ productId }: { productId: string }) {
+  const { data } = useQuery<ReviewsData>({
+    queryKey: ['reviews', productId],
+    queryFn: () => api.get(`/reviews/product/${productId}`).then(r => r.data),
+  })
+
+  if (!data || data.totalReviews === 0) {
+    return (
+      <div className="mt-10 pt-8 border-t border-gray-100">
+        <h2 className="text-lg font-black text-[#2C2C2C] mb-3">Reviews</h2>
+        <p className="text-sm text-gray-400">No reviews yet. Be the first to review this product after your order is delivered.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-10 pt-8 border-t border-gray-100">
+      <div className="flex items-center gap-4 mb-6">
+        <h2 className="text-lg font-black text-[#2C2C2C]">Reviews</h2>
+        <div className="flex items-center gap-2">
+          <StarRow rating={Math.round(data.averageRating ?? 0)} size={16} />
+          <span className="text-sm font-bold text-[#2C2C2C]">{data.averageRating?.toFixed(1)}</span>
+          <span className="text-sm text-gray-400">({data.totalReviews})</span>
+        </div>
+      </div>
+      <div className="space-y-4">
+        {data.reviews.map(r => (
+          <div key={r.id} className="tgtg-card p-4">
+            <div className="flex items-center justify-between mb-2">
+              <StarRow rating={r.rating} />
+              <span className="text-xs text-gray-400">{new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+            </div>
+            {r.comment && <p className="text-sm text-gray-600 leading-relaxed">{r.comment}</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const CDN = process.env.NEXT_PUBLIC_CDN_URL ?? ''
 function imgUrl(key: string) {
   if (!key) return '/placeholder.png'
@@ -223,6 +276,8 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
+
+      <ReviewsSection productId={product.id} />
     </div>
   )
 }
