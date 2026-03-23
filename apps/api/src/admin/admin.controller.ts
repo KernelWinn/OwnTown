@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, SetMetadata } from '@nestjs/common'
+import { Controller, Get, Post, Put, Patch, Delete, HttpCode, HttpStatus, Body, Param, Query, UseGuards, SetMetadata } from '@nestjs/common'
 import { Throttle } from '@nestjs/throttler'
 import { IsEnum } from 'class-validator'
 
@@ -60,6 +60,17 @@ export class AdminController {
   @Post('orders/:id/ship')
   createShipment(@Param('id') id: string) {
     return this.shippingService.createShipment(id)
+  }
+
+  @Delete('orders/:id/ship')
+  @HttpCode(HttpStatus.OK)
+  cancelShipment(@Param('id') id: string) {
+    return this.shippingService.cancelShipment(id)
+  }
+
+  @Get('orders/:id/track')
+  trackShipment(@Param('id') id: string) {
+    return this.shippingService.trackShipment(id)
   }
 
   @Get('orders/:id/label')
